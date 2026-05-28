@@ -9,31 +9,63 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0f0f0f;--bg2:#1a1a1a;--bg3:#242424;--bg4:#2e2e2e;
-  --text:#e0e0e0;--text2:#999;--text3:#666;
-  --accent:#4a9eff;--accent2:#2d7de0;
-  --green:#4caf50;--red:#f44336;--yellow:#ffc107;--orange:#ff9800;
+  --bg:#08111f;--bg2:#101b2d;--bg3:#18263c;--bg4:#263756;
+  --text:#edf4ff;--text2:#9eb0ca;--text3:#64748b;
+  --accent:#5cb8ff;--accent2:#1680d5;--accent-soft:rgba(92,184,255,.16);
+  --green:#4ade80;--red:#fb7185;--yellow:#fbbf24;--orange:#fb923c;
+  --green-soft:rgba(74,222,128,.16);--red-soft:rgba(251,113,133,.18);--yellow-soft:rgba(251,191,36,.16);
+  --panel-shadow:0 18px 50px rgba(2,8,23,.34);
+  --radius:20px;--card-pad:16px 18px;--card-pad-sm:12px 14px;--card-gap:12px;
   --lp:#7c3aed;--lr:#3b82f6;--lm:#14b8a6;--li:#22c55e;
   --ri:#84cc16;--rm:#f97316;--rr:#ef4444;--rp:#dc2626;
   --cur-color:#fff;
-  font-family:'Courier New',Courier,monospace;
+  font-family:'Consolas','SFMono-Regular','Cascadia Mono','Courier New',monospace;
 }
 [data-theme="light"]{
-  --bg:#f0f0f0;--bg2:#ffffff;--bg3:#e0e0e0;--bg4:#cccccc;
-  --text:#1a1a1a;--text2:#555555;--text3:#888888;
-  --accent:#1a6fd4;--accent2:#1558b0;
-  --cur-color:#000;
+  --bg:#eef4fb;--bg2:#ffffff;--bg3:#dbe6f4;--bg4:#c0d1e8;
+  --text:#102038;--text2:#4f6484;--text3:#7a8ba5;
+  --accent:#0f7ad1;--accent2:#0a67b4;--accent-soft:rgba(15,122,209,.12);
+  --green:#16a34a;--red:#dc2626;--yellow:#d97706;--orange:#ea580c;
+  --green-soft:rgba(22,163,74,.14);--red-soft:rgba(220,38,38,.12);--yellow-soft:rgba(217,119,6,.14);
+  --panel-shadow:0 18px 45px rgba(15,23,42,.08);--cur-color:#000;
 }
-body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
-.screen{display:none;min-height:100vh;padding:20px}
+body{
+  background:radial-gradient(circle at top left,rgba(92,184,255,.14),transparent 28%),
+    radial-gradient(circle at top right,rgba(251,191,36,.08),transparent 22%),var(--bg);
+  color:var(--text);min-height:100vh;overflow-x:hidden
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.32),transparent 75%);opacity:.18
+}
+/* Shared panel surface — reused by all card-like elements */
+.mode-card,.sum-card,.record-section,.records-box,.stage-item,.setting-row,.data-section,.coach-card,
+.sum-detail-card,.sum-weaknesses-card,.sum-header-card,.sum-metric-box,.sum-mini-box,
+.sum-chart-card,.sum-breakdown-card,.rec-best-box,.daily-plan-card,.setting-card,.ex-header,#sum-wordchunk-block{
+  background:var(--bg2);border:1px solid var(--bg3);box-shadow:var(--panel-shadow);border-radius:18px
+}
+/* Utility classes — replace common inline styles in JS */
+.t-text{color:var(--text)} .t-text2{color:var(--text2)} .t-text3{color:var(--text3)}
+.t-accent{color:var(--accent)} .t-green{color:var(--green)} .t-red{color:var(--red)} .t-yellow{color:var(--yellow)}
+.fz-xs{font-size:.75rem} .fz-sm{font-size:.85rem} .fz-md{font-size:.9rem}
+.fw-b{font-weight:bold} .mt-xs{margin-top:4px} .mt-sm{margin-top:6px} .mt-md{margin-top:10px}
+.screen{display:none;min-height:100vh;padding:28px 24px}
 .screen.active{display:flex;flex-direction:column}
 button{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
-  padding:10px 20px;cursor:pointer;font-family:inherit;font-size:14px;
-  transition:background .15s,border-color .15s}
-button:hover{background:var(--bg4);border-color:var(--accent)}
+  padding:10px 20px;cursor:pointer;font-family:inherit;font-size:14px;border-radius:14px;
+  transition:background .18s,border-color .18s,transform .18s,box-shadow .18s;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button:hover{background:var(--bg4);border-color:var(--accent);transform:translateY(-1px);box-shadow:0 10px 24px rgba(2,8,23,.18)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.primary{background:var(--accent2);border-color:var(--accent);color:#fff}
 button.primary:hover{background:var(--accent)}
-button.danger{background:#7f1d1d;border-color:var(--red)}
+button.danger{background:transparent;border-color:var(--red);color:var(--red)}
+button.danger:hover{background:var(--red-soft)}
+button.btn-sm{font-size:.78rem;padding:6px 12px;border-radius:10px}
+button.btn-ghost{background:transparent}
 h1{font-size:2rem;letter-spacing:.1em;color:var(--accent)}
 h2{font-size:1.3rem;letter-spacing:.05em;color:var(--text);margin-bottom:16px}
 h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
@@ -41,21 +73,35 @@ h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
 
 /* ── MAIN MENU ── */
 #screen-menu{align-items:center;justify-content:center;gap:12px;text-align:center}
-#screen-menu h1{font-size:3rem;margin-bottom:4px}
-.stage-badge{background:var(--bg3);border:1px solid var(--accent);padding:6px 24px;
-  letter-spacing:.2em;font-size:.85rem;color:var(--accent);margin-bottom:24px}
-.menu-buttons{display:flex;flex-direction:column;gap:10px;width:280px}
-.menu-buttons button{font-size:1rem;padding:14px;letter-spacing:.05em}
+#screen-menu h1{font-size:clamp(3rem,7vw,4.8rem);margin-bottom:6px;letter-spacing:.16em}
+.menu-shell{
+  width:min(100%,860px);padding:34px 30px;border:1px solid rgba(92,184,255,.18);
+  border-radius:calc(var(--radius) + 6px);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.015));
+  box-shadow:var(--panel-shadow);backdrop-filter:blur(10px)
+}
+.menu-kicker{font-size:.78rem;letter-spacing:.38em;color:var(--text2);margin-bottom:12px}
+.menu-subtitle{max-width:640px;margin:0 auto 18px;color:var(--text2);line-height:1.7;font-size:.95rem}
+.stage-badge{background:var(--accent-soft);border:1px solid rgba(92,184,255,.38);padding:10px 24px;
+  letter-spacing:.24em;font-size:.85rem;color:var(--accent);margin:0 auto 24px;border-radius:999px;display:inline-block}
+.menu-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;max-width:620px;margin:0 auto}
+.menu-buttons button{font-size:1rem;padding:16px 18px;letter-spacing:.05em}
+.daily-card{margin:18px auto 14px;max-width:720px;text-align:left;background:rgba(255,255,255,.03);border:1px solid var(--bg3);border-radius:20px;padding:18px 20px;box-shadow:var(--panel-shadow)}
+.daily-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.daily-title{font-size:.8rem;letter-spacing:.22em;color:var(--text3);margin-bottom:8px}
+.daily-name{font-size:1.18rem;color:var(--text);margin-bottom:6px}
+.daily-copy{font-size:.85rem;color:var(--text2);line-height:1.6}
+.daily-steps{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.daily-step{padding:6px 10px;border:1px solid var(--bg4);border-radius:999px;font-size:.75rem;color:var(--text2)}
+.daily-step.active{border-color:rgba(92,184,255,.4);color:var(--accent);background:var(--accent-soft)}
 .today-strip{margin-top:16px;font-size:.8rem;color:var(--text3);
-  background:var(--bg2);padding:8px 24px;border:1px solid var(--bg3)}
+  background:rgba(255,255,255,.03);padding:10px 18px;border:1px solid var(--bg3);border-radius:999px;display:inline-flex;align-self:center}
 
 /* ── MODE SELECT ── */
-#screen-modes{gap:16px}
-.back-btn{align-self:flex-start;font-size:.8rem;padding:6px 12px;margin-bottom:8px}
+#screen-modes{gap:16px;max-width:1180px;margin:0 auto;width:100%}
+.back-btn{align-self:flex-start;font-size:.8rem;padding:8px 14px;margin-bottom:8px}
 .modes-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
-.mode-card{background:var(--bg2);border:1px solid var(--bg3);padding:16px;cursor:pointer;
-  transition:border-color .15s}
-.mode-card:hover{border-color:var(--accent)}
+.mode-card{padding:16px;cursor:pointer;transition:border-color .15s,transform .18s,box-shadow .18s}
+.mode-card:hover{border-color:var(--accent);transform:translateY(-3px)}
 .mode-card.locked{opacity:.4;cursor:default}
 .mode-card h3{color:var(--accent);font-size:.9rem;letter-spacing:.1em}
 .mode-card p{font-size:.8rem;color:var(--text2);margin-top:6px}
@@ -63,19 +109,19 @@ h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
 
 /* ── EXERCISE ── */
 #screen-exercise{gap:0}
-.ex-header{display:flex;gap:24px;align-items:center;background:var(--bg2);
-  border-bottom:1px solid var(--bg3);padding:10px 20px;font-size:.85rem}
+.ex-header{display:flex;gap:24px;align-items:center;padding:12px 18px;font-size:.85rem;position:sticky;top:16px;z-index:20;margin-bottom:16px}
 .ex-stat{display:flex;flex-direction:column;align-items:center}
 .ex-stat .val{font-size:1.1rem;color:var(--accent);font-weight:bold}
 .ex-stat .lbl{font-size:.65rem;color:var(--text3);letter-spacing:.1em}
-.ex-progress-bar{flex:1;height:6px;background:var(--bg3);overflow:hidden}
+.ex-progress-bar{flex:1;height:8px;background:var(--bg3);overflow:hidden;border-radius:999px}
 .ex-progress-bar .fill{height:100%;background:var(--accent);transition:width .3s}
 .ex-timer{font-size:.9rem;color:var(--text2);min-width:40px;text-align:right}
 .ex-content{flex:1;display:flex;flex-direction:column;align-items:center;
   justify-content:center;padding:40px 20px;gap:24px}
 .ex-mode-label{font-size:.7rem;letter-spacing:.2em;color:var(--text3)}
 #ex-text-display{max-width:760px;width:100%;font-size:1.35rem;line-height:2.2;
-  letter-spacing:.03em;word-break:break-word}
+  letter-spacing:.03em;word-break:break-word;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);
+  border-radius:22px;padding:26px 28px;box-shadow:var(--panel-shadow)}
 #ex-text-display .done{color:var(--text3)}
 #ex-text-display .done-perfect{color:rgba(76,175,80,.55)}
 #ex-text-display .done-error{color:rgba(244,67,54,.45)}
@@ -115,7 +161,7 @@ h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
 
 /* ── FINGER GUIDE ── */
 .finger-guide{display:flex;align-items:center;gap:16px;background:var(--bg2);
-  border:1px solid var(--bg3);padding:10px 18px;max-width:760px;width:100%;
+  border:1px solid var(--bg3);padding:12px 18px;max-width:760px;width:100%;
   flex-wrap:wrap}
 .fg-item{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:70px}
 .fg-item .fg-key{width:44px;height:44px;border:2px solid currentColor;
@@ -160,6 +206,8 @@ h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
 .delta.up{color:var(--green)}
 .delta.down{color:var(--red)}
 .summary-pb{color:var(--yellow);font-size:.8rem;text-align:center;margin-top:8px}
+.sum-card{padding:var(--card-pad);margin-bottom:var(--card-gap);border-radius:var(--radius)}
+.stage-badge-chip{background:var(--bg3)!important;color:var(--text2)!important;border-color:var(--bg4)!important}
 .summary-problem-keys{margin-top:12px;font-size:.8rem}
 .summary-problem-keys .pk{color:var(--text2);margin-top:4px}
 .summary-problem-keys .pk span{color:var(--red);font-weight:bold;margin-right:6px}
@@ -168,22 +216,21 @@ h3{font-size:1rem;color:var(--text2);margin-bottom:8px}
 /* ── RECORDS ── */
 #screen-records{gap:16px;max-width:900px;margin:0 auto;width:100%}
 .records-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.record-section{background:var(--bg2);border:1px solid var(--bg3);padding:20px}
+.record-section{padding:20px}
 .record-row{display:flex;justify-content:space-between;align-items:center;
   padding:6px 0;border-bottom:1px solid var(--bg3);font-size:.85rem}
 .record-row:last-child{border-bottom:none}
 .record-row .rval{color:var(--accent);font-size:1rem}
 .record-row .rdate{color:var(--text3);font-size:.75rem}
-canvas{border:1px solid var(--bg3);background:var(--bg2)}
-.records-box{background:var(--bg2);border:1px solid var(--bg3);padding:20px}
+canvas{border:1px solid var(--bg3);background:var(--bg2);border-radius:18px}
+.records-box{padding:20px}
 .chart-filter{padding:4px 10px;font-size:.75rem}
 .chart-filter.active{background:var(--accent2);border-color:var(--accent);color:#fff}
 
 /* ── STAGE PROGRESS ── */
 #screen-stage{gap:20px;max-width:800px;margin:0 auto;width:100%}
 .stage-road{display:flex;flex-direction:column;gap:8px}
-.stage-item{background:var(--bg2);border:1px solid var(--bg3);padding:16px;
-  display:flex;gap:16px;align-items:center}
+.stage-item{padding:16px;display:flex;gap:16px;align-items:center}
 .stage-item.current{border-color:var(--accent)}
 .stage-item.done{opacity:.6}
 .stage-num{width:48px;height:48px;border:2px solid var(--bg4);
@@ -199,12 +246,11 @@ canvas{border:1px solid var(--bg3);background:var(--bg2)}
 
 /* ── SETTINGS ── */
 #screen-settings{gap:16px;max-width:600px;margin:0 auto;width:100%}
-.setting-row{display:flex;justify-content:space-between;align-items:center;
-  background:var(--bg2);border:1px solid var(--bg3);padding:14px 16px}
+.setting-row{display:flex;justify-content:space-between;align-items:center;padding:14px 16px}
 .setting-row label{font-size:.9rem}
 .setting-row input[type=range]{width:120px}
 .setting-row input[type=checkbox]{width:20px;height:20px;cursor:pointer}
-.data-section{background:var(--bg2);border:1px solid var(--bg3);padding:16px}
+.data-section{padding:16px}
 textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
   font-family:inherit;font-size:.75rem;width:100%;padding:8px;resize:vertical}
 
@@ -213,14 +259,14 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
   display:none;align-items:center;justify-content:center;z-index:100}
 .overlay.active{display:flex}
 .overlay-card{background:var(--bg2);border:1px solid var(--accent);
-  padding:32px;max-width:480px;width:90%;text-align:center}
+  padding:32px;max-width:480px;width:90%;text-align:center;border-radius:24px;box-shadow:var(--panel-shadow)}
 .overlay-card h2{color:var(--accent);margin-bottom:12px}
 .overlay-card p{color:var(--text2);font-size:.9rem;margin-bottom:20px}
 
 /* Notification toast */
 .toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);
   border:1px solid var(--accent);padding:12px 20px;font-size:.85rem;
-  opacity:0;transition:opacity .3s;pointer-events:none;z-index:200}
+  opacity:0;transition:opacity .3s;pointer-events:none;z-index:200;border-radius:16px;box-shadow:var(--panel-shadow)}
 .toast.show{opacity:1}
 .rec-badge{background:var(--accent2);color:#fff;font-size:.6rem;padding:2px 6px;vertical-align:middle;margin-left:6px}
 
@@ -262,11 +308,11 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 .pmg-acc{font-size:.68rem}
 .pmg-retry{font-size:.68rem}
 /* ── SESSION SUMMARY REDESIGN ── */
-.sum-header-card{background:var(--bg2);border:1px solid var(--bg3);padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+.sum-header-card{padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;border-radius:20px}
 .sum-mode-label{font-size:.7rem;letter-spacing:.2em;color:var(--text3)}
 .sum-pb-banner{font-size:.85rem;color:var(--yellow);font-weight:bold}
 .sum-metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
-.sum-metric-box{background:var(--bg2);border:1px solid var(--bg3);padding:12px;text-align:center}
+.sum-metric-box{padding:12px;text-align:center}
 .sum-metric-val{font-size:1.6rem;color:var(--accent);font-weight:bold;line-height:1}
 .sum-metric-lbl{font-size:.6rem;letter-spacing:.15em;color:var(--text3);margin-top:4px}
 .sum-metric-delta{font-size:.75rem;margin-top:4px;min-height:16px}
@@ -275,19 +321,32 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 .smb-val.con-high{color:var(--green)}
 .smb-val.con-med{color:var(--yellow)}
 .smb-val.con-low{color:var(--red)}
-.sum-detail-card{background:var(--bg2);border:1px solid var(--bg3);padding:14px 16px;margin-bottom:10px;display:none}
+.sum-detail-card{padding:14px 16px;margin-bottom:10px;display:none}
 .sum-detail-card.visible{display:block}
-.sum-weaknesses-card{background:var(--bg2);border:1px solid var(--bg3);padding:14px 16px;margin-bottom:10px;display:none}
+.sum-weaknesses-card{padding:14px 16px;margin-bottom:10px;display:none}
 .sum-weaknesses-card.visible{display:block}
 .sum-card-title{font-size:.65rem;letter-spacing:.2em;color:var(--text3);margin-bottom:10px}
 .sum-error-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.sum-error-chip{background:rgba(244,67,54,.2);border:1px solid rgba(244,67,54,.4);padding:4px 10px;font-size:.85rem;color:var(--red)}
+.sum-error-chip{background:var(--red-soft);border:1px solid var(--red);padding:4px 10px;font-size:.85rem;color:var(--red);border-radius:10px}
 .sum-rec{font-size:.8rem;color:var(--accent);margin-top:10px}
 .sum-slow-bgs{font-size:.8rem;color:var(--text3);margin-top:6px}
 .sum-trend{font-size:.8rem;margin-top:6px}
 .sum-trend.improving{color:var(--green)}
 .sum-trend.declining{color:var(--red)}
 .sum-trend.plateau{color:var(--yellow)}
+.sum-mini-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.sum-mini-box{padding:10px 12px;border-radius:16px}
+.sum-mini-lbl{font-size:.62rem;letter-spacing:.14em;color:var(--text3);margin-bottom:6px}
+.sum-mini-val{font-size:1.12rem;color:var(--text);font-weight:bold}
+.sum-chart-card,.sum-breakdown-card{padding:14px 16px;margin-bottom:10px}
+.sum-chart-meta{font-size:.78rem;color:var(--text2);margin-bottom:8px}
+.sum-chart-card canvas{width:100%;max-width:100%;height:auto}
+.sum-list{display:flex;flex-wrap:wrap;gap:6px}
+.sum-pill{padding:5px 9px;border-radius:999px;border:1px solid var(--bg4);background:rgba(255,255,255,.03);font-size:.78rem;color:var(--text)}
+.sum-pill.good{border-color:rgba(74,222,128,.38);color:var(--green)}
+.sum-pill.warn{border-color:rgba(251,191,36,.4);color:var(--yellow)}
+.sum-pill.bad{border-color:rgba(251,113,133,.45);color:var(--red)}
+.sum-section-note{font-size:.76rem;color:var(--text3);margin-top:8px}
 /* ── RECORDS TABS ── */
 .rec-tabs{display:flex;gap:0;border-bottom:1px solid var(--bg4);margin-bottom:16px}
 .rec-tab{padding:8px 18px;font-size:.8rem;letter-spacing:.1em;cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;color:var(--text3);transition:all .15s}
@@ -296,7 +355,7 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 .rec-tab-panel{display:none}
 .rec-tab-panel.active{display:block}
 .rec-bests-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
-.rec-best-box{background:var(--bg2);border:1px solid var(--bg3);padding:12px;text-align:center}
+.rec-best-box{padding:12px;text-align:center}
 .rec-best-val{font-size:1.4rem;color:var(--accent);font-weight:bold}
 .rec-best-lbl{font-size:.65rem;letter-spacing:.15em;color:var(--text3);margin-top:4px}
 .rec-mode-table{width:100%;border-collapse:collapse;font-size:.85rem;margin-bottom:12px}
@@ -306,6 +365,12 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 .heatmap-filter-btns{display:flex;gap:6px;margin-bottom:8px}
 .heatmap-filter-btn{padding:4px 12px;font-size:.75rem}
 .heatmap-filter-btn.active{background:var(--accent2);border-color:var(--accent);color:#fff}
+.coach-card{padding:14px 16px;margin-bottom:14px}
+.coach-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.coach-box{background:rgba(255,255,255,.03);border:1px solid var(--bg3);padding:12px;border-radius:16px}
+.coach-k{font-size:.62rem;letter-spacing:.14em;color:var(--text3);margin-bottom:5px}
+.coach-v{font-size:.95rem;color:var(--text)}
+.coach-list{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
 
 /* ── WORD FLOW MODE ── */
 #wc-display{display:none;flex-direction:column;align-items:center;gap:20px;width:100%;max-width:760px}
@@ -317,22 +382,59 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 .wc-char.todo{opacity:.3}
 .wc-flash-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
   font-size:1.1rem;letter-spacing:.1em;opacity:0;pointer-events:none;transition:opacity .15s;border-radius:4px}
-.wc-flash-overlay.flash-green{background:rgba(76,175,80,.15);color:var(--green);opacity:1}
-.wc-flash-overlay.flash-red{background:rgba(244,67,54,.15);color:var(--red);opacity:1}
+.wc-flash-overlay.flash-green{background:var(--green-soft);color:var(--green);opacity:1}
+.wc-flash-overlay.flash-red{background:var(--red-soft);color:var(--red);opacity:1}
 .wc-stats-bar{display:flex;gap:24px;font-size:.85rem;color:var(--text2);padding:8px 16px;
   background:var(--bg2);border:1px solid var(--bg3);width:100%;justify-content:center}
 .wcs-streak{color:var(--yellow);font-weight:bold}
 .wcs-val{color:var(--accent)}
 /* Word Flow summary */
-#sum-wordchunk-block{display:none;background:var(--bg2);border:1px solid var(--bg3);padding:14px 16px;margin-bottom:10px}
+#sum-wordchunk-block{display:none;padding:14px 16px;margin-bottom:10px}
 .wc-sum-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--bg3);font-size:.85rem}
 .wc-sum-row:last-of-type{border-bottom:none}
 .wc-sum-row .label{color:var(--text2)}
 .wc-sum-row .value{color:var(--accent);font-weight:bold}
 .wc-results-grid{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
 .wcr-word{padding:4px 10px;font-size:.75rem;border-radius:2px;border:1px solid}
-.wcr-word.perfect{border-color:var(--green);color:var(--green);background:rgba(76,175,80,.08)}
-.wcr-word.errors{border-color:var(--red);color:var(--red);background:rgba(244,67,54,.08)}
+.wcr-word.perfect{border-color:var(--green);color:var(--green);background:var(--green-soft);border-radius:10px}
+.wcr-word.errors{border-color:var(--red);color:var(--red);background:var(--red-soft);border-radius:10px}
+.settings-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.setting-card{padding:16px}
+.setting-card h3{font-size:.78rem;letter-spacing:.15em;color:var(--text3);margin-bottom:12px}
+.setting-stack{display:flex;flex-direction:column;gap:12px}
+.setting-inline{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.setting-inline label{font-size:.86rem;color:var(--text)}
+.setting-inline select,.setting-inline input[type=number]{
+  background:var(--bg3);color:var(--text);border:1px solid var(--bg4);border-radius:12px;
+  padding:8px 10px;font-family:inherit;min-width:96px
+}
+.setting-chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.setting-chip{padding:6px 10px;border:1px solid var(--bg4);border-radius:999px;font-size:.78rem;color:var(--text2);background:rgba(255,255,255,.03)}
+.setting-tip{font-size:.76rem;color:var(--text3);line-height:1.5}
+.daily-plan-card{padding:14px 16px;margin-bottom:10px;display:none}
+
+@media (max-width:900px){
+  .menu-shell{padding:28px 18px}
+  .menu-buttons{grid-template-columns:1fr}
+  .sum-metrics-grid,.rec-bests-grid,.sum-mini-grid,.coach-grid,.settings-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ex-header{flex-wrap:wrap;gap:14px}
+  .ex-progress-bar{order:10;width:100%;flex-basis:100%}
+  .stage-item{flex-direction:column;align-items:flex-start}
+  .stage-gate-btn{width:100%}
+}
+
+@media (max-width:640px){
+  .screen{padding:18px 14px}
+  .sum-metrics-grid,.rec-bests-grid,.sum-mini-grid,.coach-grid,.settings-grid{grid-template-columns:1fr}
+  .wc-word-chars{font-size:2.15rem;gap:4px}
+  #ex-text-display{padding:20px 18px;font-size:1.1rem;line-height:1.95}
+  .setting-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .rec-tabs{overflow:auto}
+  .visual-keyboard{overflow:auto}
+  .vk-row{justify-content:flex-start;min-width:max-content}
+  .wc-stats-bar{flex-wrap:wrap;gap:10px}
+  .sum-header-card{align-items:flex-start;flex-direction:column;gap:8px}
+}
 </style>
 </head>
 <body>
@@ -340,15 +442,30 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 <!-- MAIN MENU -->
 <div id="screen-menu" class="screen active">
   <button id="theme-toggle-btn" onclick="toggleTheme()" style="position:fixed;top:12px;right:16px;z-index:300;padding:5px 12px;font-size:.8rem;letter-spacing:.05em" title="Toggle theme"></button>
-  <h1>TypeForge</h1>
-  <div class="stage-badge" id="menu-stage-badge">STAGE 0 — FOUNDATION</div>
-  <div class="menu-buttons">
-    <button class="primary" onclick="showScreen('modes')">▶  Train</button>
-    <button onclick="showScreen('records')">◈  Records</button>
-    <button onclick="showScreen('stage')">◉  Stage Progress</button>
-    <button onclick="showScreen('settings')">⚙  Settings</button>
+  <div class="menu-shell">
+    <div class="menu-kicker">ACCURACY FIRST</div>
+    <h1>TypeForge</h1>
+    <p class="menu-subtitle">A more focused typing trainer built around deliberate practice, cleaner feedback, and steady progression instead of noisy stats.</p>
+    <div class="stage-badge" id="menu-stage-badge">STAGE 0 — FOUNDATION</div>
+    <div class="daily-card" id="daily-card">
+      <div class="daily-head">
+        <div>
+          <div class="daily-title">TODAY'S PLAN</div>
+          <div class="daily-name" id="daily-plan-name">Build your next session</div>
+          <div class="daily-copy" id="daily-plan-copy">Open the trainer to generate a focused plan based on your recent weak spots.</div>
+        </div>
+        <button class="primary" onclick="startDailySession()">▶ Daily Session</button>
+      </div>
+      <div class="daily-steps" id="daily-plan-steps"></div>
+    </div>
+    <div class="menu-buttons">
+      <button class="primary" onclick="showScreen('modes')">▶  Train</button>
+      <button onclick="showScreen('records')">◈  Records</button>
+      <button onclick="showScreen('stage')">◉  Stage Progress</button>
+      <button onclick="showScreen('settings')">⚙  Settings</button>
+    </div>
+    <div class="today-strip" id="today-strip">Today: 0 sessions · — avg WPM</div>
   </div>
-  <div class="today-strip" id="today-strip">Today: 0 sessions · — avg WPM</div>
 </div>
 
 <!-- MODE SELECT -->
@@ -366,7 +483,7 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
     <div class="ex-stat"><span class="val" id="stat-err">0</span><span class="lbl">ERR</span></div>
     <div class="ex-progress-bar"><div class="fill" id="ex-progress-fill" style="width:0%"></div></div>
     <div class="ex-timer" id="ex-timer">0:00</div>
-    <button style="font-size:.75rem;padding:4px 10px" onclick="endExercise(true)">✕ End</button>
+    <button class="btn-sm" onclick="endExercise(true)">✕ End</button>
   </div>
   <div class="ex-content" id="ex-content">
     <div class="ex-mode-label" id="ex-mode-label">WORD TRAINING</div>
@@ -455,6 +572,12 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
         <div class="sum-metric-delta" id="sum-dur" style="font-size:.75rem;color:var(--text3)"></div>
       </div>
     </div>
+    <div class="sum-mini-grid">
+      <div class="sum-mini-box"><div class="sum-mini-lbl">RAW WPM</div><div class="sum-mini-val" id="sum-raw-wpm">—</div></div>
+      <div class="sum-mini-box"><div class="sum-mini-lbl">NET WPM</div><div class="sum-mini-val" id="sum-net-wpm">—</div></div>
+      <div class="sum-mini-box"><div class="sum-mini-lbl">ERROR RATE</div><div class="sum-mini-val" id="sum-error-rate">—</div></div>
+      <div class="sum-mini-box"><div class="sum-mini-lbl">PEAK BURST</div><div class="sum-mini-val" id="sum-burst-wpm">—</div></div>
+    </div>
     <!-- Detail card (mode-specific) -->
     <div class="sum-detail-card" id="sum-detail-card">
       <div class="sum-card-title">SESSION DETAILS</div>
@@ -462,8 +585,34 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
       <div class="sum-slow-bgs" id="sum-slow-bigrams"></div>
       <div class="sum-trend" id="sum-trend"></div>
     </div>
+    <div class="sum-chart-card">
+      <div class="sum-card-title">PACE OVER TIME</div>
+      <div class="sum-chart-meta" id="sum-chart-meta">Tracking second-by-second pace and accuracy.</div>
+      <canvas id="sum-timeline-chart" width="820" height="200"></canvas>
+    </div>
+    <div class="sum-breakdown-card">
+      <div class="sum-card-title">ACCURACY BREAKDOWN</div>
+      <div style="margin-bottom:10px">
+        <div class="sum-mini-lbl" style="margin-bottom:8px">KEYS</div>
+        <div class="sum-list" id="sum-key-accuracy"></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div class="sum-mini-lbl" style="margin-bottom:8px">BIGRAMS</div>
+        <div class="sum-list" id="sum-bigram-accuracy"></div>
+      </div>
+      <div>
+        <div class="sum-mini-lbl" style="margin-bottom:8px">TRIGRAMS</div>
+        <div class="sum-list" id="sum-trigram-accuracy"></div>
+      </div>
+      <div class="sum-section-note" id="sum-breakdown-note"></div>
+    </div>
+    <div class="daily-plan-card" id="sum-daily-card">
+      <div class="sum-card-title">DAILY SESSION</div>
+      <div id="sum-daily-copy" style="font-size:.86rem;color:var(--text2);line-height:1.6"></div>
+      <div class="daily-steps" id="sum-daily-steps" style="margin-top:10px"></div>
+    </div>
     <!-- Precision block -->
-    <div id="sum-precision-block" style="display:none;background:var(--bg2);border:1px solid var(--bg3);padding:14px 16px;margin-bottom:10px">
+    <div id="sum-precision-block" class="sum-card" style="display:none">
       <div class="sum-card-title">PRECISION MODE</div>
       <div class="prec-sum-row"><span class="label">Perfect First Attempt</span><span class="value" id="sum-prec-perfect">—</span></div>
       <div class="prec-sum-row"><span class="label">Total Keystrokes</span><span class="value" id="sum-prec-attempts">—</span></div>
@@ -487,6 +636,7 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
       <div class="sum-rec" id="sum-recommended"></div>
     </div>
     <div style="display:flex;gap:10px;margin-top:16px">
+      <button id="sum-next-daily-btn" class="primary" style="display:none" onclick="continueDailySession()">▶ Next Daily Step</button>
       <button class="primary" onclick="startCurrentMode()">▶ Again</button>
       <button onclick="showScreen('modes')">Mode Select</button>
       <button onclick="showScreen('menu')">Menu</button>
@@ -508,6 +658,12 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 
     <!-- Overview tab -->
     <div id="rec-tab-overview" class="rec-tab-panel active">
+      <div class="coach-card" id="rec-coach-card">
+        <div class="sum-card-title">PERSONAL COACH</div>
+        <div id="rec-coach-text" style="font-size:.92rem;color:var(--text);line-height:1.65">Keep training to unlock adaptive recommendations.</div>
+        <div class="coach-grid" id="rec-coach-grid"></div>
+        <div class="coach-list" id="rec-coach-list"></div>
+      </div>
       <div class="rec-bests-grid" id="rec-bests-grid"></div>
       <div id="records-speed" style="margin-bottom:12px"></div>
       <div id="records-accuracy" style="margin-bottom:12px"></div>
@@ -567,10 +723,36 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
 <div id="screen-settings" class="screen">
   <button class="back-btn" onclick="showScreen('menu')">← Back</button>
   <h2>Settings</h2>
+  <div class="settings-grid">
+    <div class="setting-card">
+      <h3>TEST CONFIG</h3>
+      <div class="setting-stack">
+        <div class="setting-inline"><label>Default duration (seconds)</label><input type="number" id="set-duration" min="15" max="300" step="15" onchange="saveSetting('testDuration',Math.max(15,Math.min(300,+this.value||60)))"></div>
+        <div class="setting-inline"><label>Default word count</label><input type="number" id="set-wordcount" min="10" max="120" step="5" onchange="saveSetting('testWords',Math.max(10,Math.min(120,+this.value||40)))"></div>
+        <div class="setting-inline"><label>Capitalization rate <span id="cap-val">6</span>%</label><input type="range" id="set-capitalization" min="0" max="50" value="6" oninput="$('cap-val').textContent=this.value;saveSetting('capitalizationRate',+this.value)"></div>
+        <div class="setting-inline"><label>Punctuation density <span id="punct-val">14</span>%</label><input type="range" id="set-punctuation-density" min="0" max="60" value="14" oninput="$('punct-val').textContent=this.value;saveSetting('punctuationDensity',+this.value)"></div>
+        <div class="setting-inline"><label>Number density <span id="num-val">10</span>%</label><input type="range" id="set-number-density" min="0" max="60" value="10" oninput="$('num-val').textContent=this.value;saveSetting('numberDensity',+this.value)"></div>
+        <div class="setting-inline"><label>Symbol density <span id="sym-val">4</span>%</label><input type="range" id="set-symbol-density" min="0" max="40" value="4" oninput="$('sym-val').textContent=this.value;saveSetting('symbolDensity',+this.value)"></div>
+      </div>
+    </div>
+    <div class="setting-card">
+      <h3>CONTENT MIX</h3>
+      <div class="setting-stack">
+        <div class="setting-row"><label>Allow punctuation in drills</label><input type="checkbox" id="set-punctuation" onchange="saveSetting('includePunctuation',this.checked)"></div>
+        <div class="setting-row"><label>Allow numbers in drills</label><input type="checkbox" id="set-numbers" onchange="saveSetting('includeNumbers',this.checked)"></div>
+        <div class="setting-row"><label>Allow symbols in drills</label><input type="checkbox" id="set-symbols" onchange="saveSetting('includeSymbols',this.checked)"></div>
+        <div class="setting-row"><label>Enable adaptive coaching</label><input type="checkbox" id="set-adaptive" onchange="saveSetting('adaptiveCoach',this.checked)"></div>
+        <div class="setting-tip">These options affect standard word, flow, timed and adaptive sessions. Specialized drills can still override them when needed.</div>
+      </div>
+    </div>
+  </div>
   <div class="setting-row"><label>Sound Effects</label><input type="checkbox" id="set-sound" onchange="saveSetting('sound',this.checked)"></div>
-  <div class="setting-row"><label>Metronome BPM <span id="bpm-val">80</span></label><input type="range" id="set-bpm" min="40" max="200" value="80" oninput="document.getElementById('bpm-val').textContent=this.value;saveSetting('bpm',+this.value)"></div>
-  <div class="setting-row"><label>Font Size <span id="font-val">1.35</span>rem</label><input type="range" id="set-font" min="1" max="2" step="0.05" value="1.35" oninput="document.getElementById('font-val').textContent=this.value;applyFontSize(+this.value)"></div>
+  <div class="setting-row"><label>Sound Profile</label><select id="set-sound-profile" onchange="saveSetting('soundProfile',this.value)"><option value="classic">Classic</option><option value="soft">Soft</option><option value="sharp">Sharp</option></select></div>
+  <div class="setting-row"><label>Metronome BPM <span id="bpm-val">80</span></label><input type="range" id="set-bpm" min="40" max="200" value="80" oninput="$('bpm-val').textContent=this.value;saveSetting('bpm',+this.value)"></div>
+  <div class="setting-row"><label>Font Size <span id="font-val">1.35</span>rem</label><input type="range" id="set-font" min="1" max="2" step="0.05" value="1.35" oninput="$('font-val').textContent=this.value;applyFontSize(+this.value)"></div>
   <div class="setting-row"><label>Show Visual Keyboard by default</label><input type="checkbox" id="set-vk" onchange="saveSetting('showVK',this.checked)"></div>
+  <div class="setting-row"><label>Zen Mode by default</label><input type="checkbox" id="set-zen" onchange="saveSetting('zenMode',this.checked)"></div>
+  <div class="setting-row"><label>Auto-focus coaching hints</label><input type="checkbox" id="set-live-coach" onchange="saveSetting('liveCoach',this.checked)"></div>
   <div class="setting-row"><label>Theme</label><button id="set-theme-btn" onclick="toggleTheme()" style="padding:6px 16px;font-size:.85rem"></button></div>
   <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:8px">
     <label>Custom Word List (Stage 6) — space or newline separated</label>
@@ -588,71 +770,120 @@ textarea{background:var(--bg3);color:var(--text);border:1px solid var(--bg4);
   </div>
 </div>
 
-<!-- STAGE GATE OVERLAY -->
-<div class="overlay" id="gate-overlay">
-  <div class="overlay-card">
-    <h2 id="gate-title">Stage Gate Test</h2>
-    <p id="gate-desc">Complete this 60-second test to advance.</p>
-    <div style="display:flex;gap:10px;justify-content:center">
-      <button class="primary" onclick="startGateTest()">Start Test</button>
-      <button onclick="closeOverlay()">Cancel</button>
-    </div>
-  </div>
-</div>
-
-<!-- STAGE UP OVERLAY -->
-<div class="overlay" id="stageup-overlay">
-  <div class="overlay-card">
-    <h2 id="stageup-title">★ Stage Advanced! ★</h2>
-    <p id="stageup-desc"></p>
-    <button class="primary" onclick="closeOverlay();showScreen('stage')">View Progress</button>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 // ═══════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
 const STORAGE_KEY = 'typeforge_data';
 const STAGE_NAMES = ['Foundation','Apprentice','Builder','Journeyman','Craftsman','Expert','Master'];
+// Stage thresholds — purely informational. Players never get locked out of modes.
+// Stage advances automatically when the rolling average of recent speed sessions
+// meets the next stage's WPM and accuracy.
 const STAGE_REQS = [
-  {wpm:0,  acc:100}, // stage 0 unlocked by homerow streak, not STAGE_REQS
-  {wpm:40, acc:92},
-  {wpm:55, acc:94},
-  {wpm:70, acc:95},
-  {wpm:85, acc:96},
-  {wpm:100,acc:97},
-  {wpm:110,acc:98},
+  {wpm:0,   acc:0},
+  {wpm:30,  acc:92},
+  {wpm:45,  acc:94},
+  {wpm:60,  acc:95},
+  {wpm:75,  acc:96},
+  {wpm:90,  acc:97},
+  {wpm:105, acc:98},
 ];
 const STAGE_UNLOCKS = [
-  'Home row drills, basic bigrams',
-  'All letter drills, top 200 words, Speed Burst',
-  'Rhythm Typing, trigrams, top 500 words',
-  'Flow Typing, real sentences, top 1000 words',
-  'Full text passages, Problem Key Drill',
-  'Speed Sprint, literature excerpts',
-  'Custom text import',
+  'Welcome — every mode is open. Try Word Training first.',
+  'Building rhythm — keep accuracy above 92%.',
+  'Letter patterns and bigrams click into place.',
+  'Reading ahead — sentences flow more naturally.',
+  'Sustained 75 WPM. Mixed casing and punctuation feel natural.',
+  'Expert pace. Numbers, symbols and burst work fold in.',
+  'Mastery — typing dissolves into thought.',
 ];
+const STAGE_ROLLING_WINDOW = 5;
 
+function pad2(n){ return String(n).padStart(2,'0'); }
+function getDateKey(date=new Date()){
+  return `${date.getFullYear()}-${pad2(date.getMonth()+1)}-${pad2(date.getDate())}`;
+}
+function addDays(date, days){
+  const d = new Date(date);
+  d.setDate(d.getDate() + days);
+  return d;
+}
+function getStageGateReq(stage=DATA.stage){
+  return STAGE_REQS[stage + 1] || null;
+}
+const SPEED_SESSION_MODES = ['word','flow','timed1','timed3','adaptive','flow'];
+function getRollingSpeedAverage(window=STAGE_ROLLING_WINDOW){
+  const recent = (DATA.sessions||[])
+    .filter(s => SPEED_SESSION_MODES.includes(s.mode) && Number.isFinite(s.wpm) && s.wpm > 0)
+    .slice(-window);
+  if(!recent.length) return null;
+  const wpm = recent.reduce((s,r)=>s+r.wpm, 0) / recent.length;
+  const acc = recent.reduce((s,r)=>s+(r.accuracy||0), 0) / recent.length;
+  return {wpm, acc, count: recent.length};
+}
+function parseDateKey(dateKey){
+  if(!dateKey || !/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) return null;
+  const [y,m,d] = dateKey.split('-').map(Number);
+  return new Date(y, m-1, d);
+}
+function formatStoredDate(dateKey){
+  const d = parseDateKey(dateKey);
+  return d ? d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+}
+
+const DATA_SCHEMA_VERSION = 2;
 function defaultData(){
   return {
+    version: DATA_SCHEMA_VERSION,
     stage:0,sessions:[],records:{
       bestWPM:0,bestAccuracy:0,bestBurstWPM:0,bestRhythmWPM:0,
       longestPerfectStreak:0,longestSessionStreak:0,currentSessionStreak:0,
       lastSessionDate:null
     },
-    problemPool:{},keyErrorCounts:{},settings:{sound:true,bpm:80,fontSize:1.35,showVK:true,showFingerGuide:true,showFingerDots:true,theme:'dark'},
-    homeRowPerfect:0, customWords:'',
+    problemPool:{},keyErrorCounts:{},settings:{
+      sound:true,bpm:80,fontSize:1.35,showVK:true,showFingerGuide:true,showFingerDots:true,theme:'dark',
+      testDuration:60,testWords:40,capitalizationRate:6,punctuationDensity:14,numberDensity:10,symbolDensity:4,
+      includePunctuation:false,includeNumbers:false,includeSymbols:false,adaptiveCoach:true,zenMode:false,
+      liveCoach:true,soundProfile:'classic'
+    },
+    customWords:'',
     bigramLatencies:{}, fingerErrors:{}, fingerLatencies:{},
+    keyStats:{}, bigramStats:{}, trigramStats:{},
     precisionBests:{ bestPerfectPct:0 },
     modeRecords:{},
     sessionDates:[],
+    dailyHistory:{lastPlanDate:null,lastPlanModes:[]},
   };
 }
 
+// Migrate older saves into the current schema. Never throw.
+function migrateData(d){
+  if(!d || typeof d !== 'object') return defaultData();
+  // v2: stage gating removed. Old saves with homeRowPerfect or stuck at stage 0 with sessions get promoted.
+  if((d.version|0) < 2){
+    if(typeof d.stage !== 'number' || d.stage < 0) d.stage = 0;
+    if(d.stage === 0 && ((d.homeRowPerfect|0) > 0 || (Array.isArray(d.sessions) && d.sessions.length > 0))){
+      d.stage = 1;
+    }
+    delete d.homeRowPerfect;
+    d.version = 2;
+  }
+  // Drop malformed sessions so charts/coach never crash.
+  if(Array.isArray(d.sessions)){
+    d.sessions = d.sessions.filter(s => s && typeof s === 'object' && Number.isFinite(s.wpm));
+  } else {
+    d.sessions = [];
+  }
+  d.stage = Math.max(0, Math.min(STAGE_NAMES.length - 1, d.stage|0));
+  return d;
+}
+
 let DATA = defaultData();
+let dailySession = {active:false, plan:[], index:0, label:'', note:''};
 
 function deepMergeData(defaults, saved){
   const merged = {...defaults, ...saved};
@@ -668,7 +899,13 @@ function deepMergeData(defaults, saved){
 function loadData(){
   try{
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){ DATA = deepMergeData(defaultData(), JSON.parse(raw)); }
+    if(raw){
+      const parsed = JSON.parse(raw);
+      const migrated = migrateData(parsed);
+      DATA = deepMergeData(defaultData(), migrated);
+      // Persist migrations immediately so future loads skip them.
+      if((parsed.version|0) !== DATA_SCHEMA_VERSION) saveData();
+    }
   }catch(e){ console.error('[TypeForge]', e); DATA = defaultData(); }
 }
 function saveData(){
@@ -678,14 +915,14 @@ function saveData(){
 function saveSetting(key,val){ DATA.settings[key]=val; saveData(); }
 function saveCustomWords(val){ DATA.customWords = val.trim(); saveData(); }
 function applyFontSize(v){
-  document.getElementById('ex-text-display').style.fontSize = v+'rem';
+  $('ex-text-display').style.fontSize = v+'rem';
   saveSetting('fontSize',v);
 }
 function applyTheme(t){
   document.documentElement.setAttribute('data-theme', t);
   const label = t==='light' ? '🌙 Dark Mode' : '☀ Light Mode';
-  const btn1 = document.getElementById('theme-toggle-btn');
-  const btn2 = document.getElementById('set-theme-btn');
+  const btn1 = $('theme-toggle-btn');
+  const btn2 = $('set-theme-btn');
   if(btn1) btn1.textContent = label;
   if(btn2) btn2.textContent = label;
   saveSetting('theme', t);
@@ -694,20 +931,131 @@ function toggleTheme(){
   applyTheme(DATA.settings.theme==='light' ? 'dark' : 'light');
 }
 
+function clamp(num, min, max){ return Math.max(min, Math.min(max, num)); }
+function sample(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr;
+}
+function getSessionConfig(mode){
+  const s = DATA.settings||{};
+  const timedMode = mode === 'timed3' ? 180 : mode === 'timed1' ? 60 : (s.testDuration||60);
+  return {
+    duration: clamp(+timedMode || 60, 15, 300),
+    wordCount: clamp(+(s.testWords||40), 10, 120),
+    includePunctuation: !!s.includePunctuation || mode === 'punctuation',
+    includeNumbers: !!s.includeNumbers || mode === 'numbers',
+    includeSymbols: !!s.includeSymbols || mode === 'numbers',
+    capitalizationRate: clamp(+(s.capitalizationRate||0), 0, 50) / 100,
+    punctuationDensity: clamp(+(s.punctuationDensity||0), 0, 60) / 100,
+    numberDensity: clamp(+(s.numberDensity||0), 0, 60) / 100,
+    symbolDensity: clamp(+(s.symbolDensity||0), 0, 40) / 100,
+  };
+}
+
 // ═══════════════════════════════════════════════
 // WORD LISTS
 // ═══════════════════════════════════════════════
-const WORDS_200 = 'the of to and a in is it you that he was for on are as with his they i at be this have from or one had by word but not what all were we when your can said there use an each which she do how their if will up other about out many then them these so some her would make like him into time has look two more write go see number no way could people my than first water been call who oil its now find long down day did get come made may part over new sound take only little work know place years live me back give most very after things our just name good sentence man think say great where help through much before line right too means old any same tell boy follow came want show also around form three small set put end does another well large need large big turn here why ask went men read land differ home us move try kind hand picture again change play spell air away animals house point page letters mother answer found study still learn should america world high'.split(' ');
+const WORDS_200 = `
+the of to and a in is it you that for on are with as be at this have from
+or one had by not but what all were we when your can said there use each
+which she do how their if will up other about out many then them these so
+some her would make like him into time has look two more write go see number
+no way could people my than first water been call who now find long down day
+did get come made may part over new sound take only little work know place
+years live me back give most very after things our just name good sentence
+man think say great where help through much before line right too means old
+any same tell boy follow came want show also around form three small set put
+end does another well large must big even such because turn here why ask went
+men read need land different home us move try kind hand picture again change
+play spell air away animal house point page letter mother answer found study
+still learn should world high every near add food between own below country
+plant last school father keep tree never start city earth eyes light thought
+head under story left few while along both paper together group often run
+important until children side feet car mile night walk white sea river state
+book hear stop later miss idea enough face watch far almost above cut talk
+soon song family music color stand sun question fish area mark horse bird room
+knew since ever piece told seen open life always those next hard example begin
+life once close seem
+`.trim().split(/\s+/);
 
-const WORDS_500_EXTRA = 'country plant light voice power town fine drive short road full force kind done dark surface past ball girl warm lay main clear age course produce building ocean class note nothing rest carefully scientists side feet car mile night walked white sea began grow took river four carry state once book hear stop without second later miss idea enough eat face watch far Indians really almost let above girl sometimes mountains cut young talk soon list song leave family body music color stand sun questions fish area mark horse birds problem complete room knew since ever piece told head under story saw left don\'t few while along might close something seem next hard open walk example begin life always those both paper together got group often run important until children'.split(' ').filter(w=>w.length>1);
+const WORDS_500_EXTRA = `
+morning evening today tomorrow winter spring summer autumn window kitchen table
+garden travel simple steady gentle better faster slower quiet bright smooth
+strong plain basic clear focus repeat pattern memory motion finger posture
+rhythm timing lesson practice review effort progress result target control
+signal pause reset commit clean exact steadying useful common normal daily
+local global value point order level whole maybe almost enough either neither
+across beyond toward around inside outside between within beside before after
+early later final ready start finish begin carry bring build break shape solve
+check learn teach share write read speak listen notice compare adjust improve
+reduce increase settle remain appear return become belong matter create design
+system method reason detail choice option future present moment minute second
+hour week month season office studio market station bridge street corner block
+field forest valley mountain ocean harbor village campus library dinner coffee
+breakfast lunch bottle window mirror pillow blanket jacket pocket canvas brush
+screen button folder browser signal engine battery cursor shortcut custom quote
+phrase passage paragraph chapter novel poetry letter message address subject
+status record history graph chart metric streak summary session attempt replay
+reviewer teacher student partner friend family parent child people person woman
+father mother sister brother memory habit comfort pressure balance patience
+energy effort skill speed accuracy precision fluency cadence sequence cluster
+thumb index middle ring pinky anchor ladder inward outward upper lower bottom
+top row home row keypress spacing symbol comma period colon semicolon question
+answer reply value total ratio score trend growth plateau decline checkpoint
+repair weak slower strongest weakest problem stumble drift tense relax breathe
+settle smoothness natural useful durable lasting lastingness context meaning
+story scene detail image gesture patterning sentence flow transition recovery
+coast branch stone metal wooden silver golden narrow broad simple calm steady
+careful direct honest human practical helpful
+`.trim().split(/\s+/);
 
-const WORDS_1000_EXTRA = 'thought different number letter answer across told general table between keep name toward system point round clear white black whole special heavy fine certain fly unit lead cry dark machine note wait plan figure star box noun field rest correct able pound done beauty drive stood contain front teach week final gave green oh quick oh develop ocean free minute strong special sure hold represent believe fall pass ship half stay west lay type usually'.split(' ').filter(w=>w.length>1);
+const WORDS_1000_EXTRA = `
+another without against beneath between beyond however perhaps already although
+instead nearly always rarely mostly truly surely likely simply fairly deeply
+closely clearly safely gently neatly mostly barely strongly widely quietly
+rapidly slowly easily largely partly wholly mostly rather indeed maybe surely
+serious curious patient stable stablely durable lasting useful relevant focused
+focusedly consistent deliberate intentional readable natural meaningful flexible
+adaptive grounded practical personal private offline local portable reliable
+responsive polished refined balanced cohesive expressive minimal modern classic
+subtle visual tactile audible feedback metric analytics breakdown snapshot
+timeline overview detail compare contrast diagnose classify recommend surface
+highlight isolate reinforce strengthen maintain recover recoverable transition
+transitioning combination interaction sequence sequencing repetition intervals
+cadence hesitation certainty uncertainty attention awareness posture alignment
+comfort strain fatigue endurance endurance-based rhythm-based precision-based
+word-based letter-based sentence-based paragraph-based realistic technical daily
+workflow message writing coding terminal browser document article passage source
+customize preference density frequency variety difficulty beginner intermediate
+advanced mastery foundation apprentice builder journey craft expert steadyness
+accuracy-first quality long-term sustainable sustainablely repeatable practical
+scenario context-aware language commonality familiarity vocabulary expression
+structure punctuation capitalization lowercase uppercase proper noun weekday
+monday tuesday wednesday thursday friday saturday sunday january february march
+april august september october november december office-home workbench notebook
+backspace enter escape shift control command option recordkeeping visualization
+correction pacing segment cluster commonword phrasework sentencework longform
+reflection adaptation optimization calibration consistency confidence retention
+retrieval transfer reinforcement maintenance improvement insight guidance coach
+practice-set drill-set warmup cooldown checkpoint target-zone challenge recovery
+readability naturalness coherence sequence-level transition-level human-sounding
+use-case durable-skill broad-coverage everyday-language
+`.trim().split(/\s+/).filter(w=>/^[a-z-]+$/.test(w));
 
 const TOP_500 = [...new Set([...WORDS_200,...WORDS_500_EXTRA])];
 const TOP_1000 = [...new Set([...TOP_500,...WORDS_1000_EXTRA])];
 
 const BIGRAMS = ['th','he','in','er','an','re','on','en','at','es','ed','it','ou','to','ha','ng','st','nd','or','is'];
 const TRIGRAMS = ['the','and','ing','ion','ent','ati','for','her','ter','hat','ere','his','on ','res','ver','all','wit','tio','eve','int'];
+const PUNCTUATION_SUFFIXES = ['. ',', ','! ','? ','; ',': '];
+const SYMBOL_TOKENS = ['#','/','&','+','=','%','$','@'];
+const NUMBER_TOKENS = ['2026','404','15','120','3.14','7:30','42','88','512','1000'];
+const SAME_FINGER_BIGRAMS = ['de','ki','ol','ws','pl','fr','ju','ed','ik','cv','nm'];
+const CODE_TOKENS = ['const','let','return','value','state','render','build','start','check','class','style','logic','input','event','timer','count','index','shift','enter'];
 
 const HOME_ROW_SEQUENCES = [
   'asdf jkl; fdsa ;lkj','asdfjkl; jkl;asdf','fds ads fds','jkl jkl kl kl',
@@ -765,6 +1113,246 @@ const BIGRAM_WORDS = {
 
 const LEFT_HAND_KEYS  = new Set('qwertasdfgzxcvb ');
 const RIGHT_HAND_KEYS = new Set("yuiophjklnm;', ");
+const CORPUS_HINTS = {
+  frequency:'Most common English for smooth, efficient reps.',
+  accuracy:'Short, clean words for zero-slop repetition.',
+  samefinger:'Awkward same-finger transitions and ring/pinky repair.',
+  flow:'Natural sentence-friendly vocabulary for long-form fluency.',
+  punctuation:'Words that read well with punctuation and casing.',
+  numbers:'Number-friendly vocabulary for values, dates and symbols.',
+  code:'Code-like terms and terse technical tokens.'
+};
+
+function decorateToken(token, cfg, state){
+  let out = token;
+  const canCap = /^[a-z]/.test(out);
+  const gapTarget = state?.capGapTarget ?? 999;
+  const gapNow = state?.wordsSinceCap ?? 999;
+  const shouldCap = canCap && state && state.allowCaps && gapNow >= gapTarget && Math.random() < cfg.capitalizationRate;
+  if(shouldCap){
+    out = out[0].toUpperCase() + out.slice(1);
+    state.wordsSinceCap = 0;
+    state.capGapTarget = 8 + Math.floor(Math.random()*8);
+  }
+  if(cfg.includeNumbers && Math.random() < cfg.numberDensity){
+    out = `${out}${Math.random() < 0.55 ? sample(NUMBER_TOKENS) : Math.floor(Math.random()*900+100)}`;
+  }
+  if(cfg.includeSymbols && Math.random() < cfg.symbolDensity){
+    out = `${sample(SYMBOL_TOKENS)}${out}${Math.random() < 0.45 ? sample(SYMBOL_TOKENS) : ''}`;
+  }
+  if(cfg.includePunctuation && Math.random() < cfg.punctuationDensity){
+    out = `${out}${sample(PUNCTUATION_SUFFIXES).trimEnd()}`;
+  }
+  if(state){
+    state.wordsSinceCap++;
+    if(/[.!?]$/.test(out)) state.wordsSinceCap = state.capGapTarget;
+  }
+  return out;
+}
+function getWordPoolForStage(stage=DATA.stage){
+  return stage >= 3 ? TOP_1000 : stage >= 2 ? TOP_500 : WORDS_200;
+}
+function createDecorState(cfg, opts={}){
+  return {
+    allowCaps: !!opts.allowCaps,
+    wordsSinceCap: opts.startReady ? 999 : 0,
+    capGapTarget: opts.capGapTarget || (10 + Math.floor(Math.random()*8))
+  };
+}
+function buildNaturalWordRun(words, cfg, opts={}){
+  const state = createDecorState(cfg, opts);
+  return words.map((word, index)=>{
+    if(index === 0 && opts.forceFirstLower !== true && opts.allowCaps && /^[a-z]/.test(word)){
+      state.wordsSinceCap = state.capGapTarget;
+    }
+    return decorateToken(word, cfg, state);
+  });
+}
+function buildProgressivePool(basePool, count){
+  const short = basePool.filter(w=>w.length<=4);
+  const medium = basePool.filter(w=>w.length>=5 && w.length<=7);
+  const long = basePool.filter(w=>w.length>=8);
+  const out = [];
+  for(let i=0;i<count;i++){
+    const phase = i / Math.max(1,count-1);
+    let src = short;
+    if(phase > 0.33 && phase <= 0.75) src = medium.length ? medium : basePool;
+    if(phase > 0.75) src = long.length ? long : medium.length ? medium : basePool;
+    if(!src.length) src = basePool;
+    out.push(sample(src));
+  }
+  return out;
+}
+function buildSpecializedCorpora(){
+  const frequency = [...new Set([...WORDS_200.slice(0,180), ...TOP_500.filter(w=>w.length<=7).slice(0,220)])];
+  const accuracy = [...new Set(frequency.filter(w=>w.length>=3 && w.length<=6 && !w.includes('-')))];
+  const samefinger = [...new Set(TOP_1000.filter(w=>SAME_FINGER_BIGRAMS.some(bg=>w.includes(bg))))];
+  const flow = [...new Set([...TOP_500.filter(w=>w.length>=4 && w.length<=8), ...FLOW_SENTENCES.join(' ').toLowerCase().replace(/[^a-z\s]/g,' ').split(/\s+/).filter(Boolean)])];
+  const punctuation = [...new Set(flow.filter(w=>w.length>=3 && w.length<=9))];
+  const numbers = [...new Set(['time','date','value','total','score','level','entry','record','status','build','step','phase','model','input','output','range','rate','clock','daily','weekly', ...TOP_500.filter(w=>w.length>=4 && w.length<=7).slice(0,80), ...NUMBER_TOKENS])];
+  const code = [...new Set([...CODE_TOKENS, ...TOP_500.filter(w=>/^[a-z]+$/.test(w) && w.length>=4 && w.length<=8).slice(0,90)])];
+  return {frequency, accuracy, samefinger, flow, punctuation, numbers, code};
+}
+const SPECIALIZED_CORPORA = buildSpecializedCorpora();
+function getCorpus(name){
+  return SPECIALIZED_CORPORA[name] || SPECIALIZED_CORPORA.frequency;
+}
+function pickProblemWords(problemWords, count){
+  return Object.entries(DATA.problemPool)
+    .filter(([w,v])=>v>0 && problemWords.includes(w))
+    .sort((a,b)=>b[1]-a[1])
+    .slice(0,count)
+    .map(([w])=>w);
+}
+function analyzeBottlenecks(){
+  const last = DATA.sessions.slice(-12);
+  const avgAcc = last.length ? last.reduce((s,r)=>s+r.accuracy,0)/last.length : 100;
+  const avgCons = last.filter(s=>s.consistencyScore!=null).length
+    ? last.filter(s=>s.consistencyScore!=null).reduce((s,r)=>s+r.consistencyScore,0)/last.filter(s=>s.consistencyScore!=null).length
+    : 100;
+  const avgErrRate = last.length ? last.reduce((s,r)=>s+(r.errorRate||0),0)/last.length : 0;
+  const profile = getAdaptiveProfile();
+  return {
+    avgAcc, avgCons, avgErrRate, profile,
+    needsAccuracy: avgAcc < 95 || avgErrRate > 7,
+    needsRhythm: avgCons < 68,
+    needsSameFinger: profile.weakBigrams.some(({bg})=>bg.length===2 && KEY_FINGERS[bg[0]] === KEY_FINGERS[bg[1]]),
+    needsFlow: DATA.stage >= 2 && avgAcc >= 94,
+    needsNumbers: Object.entries(DATA.keyStats||{}).some(([k,v])=>/\d/.test(k) && v.attempts >= 4 && (v.hits/v.attempts) < 0.92)
+  };
+}
+function buildDailyPlan(){
+  const bottlenecks = analyzeBottlenecks();
+  const plan = [{mode:'word', label:'Warmup core'}];
+  if(bottlenecks.needsAccuracy) plan.push({mode:'precision', label:'Accuracy repair'});
+  else if(bottlenecks.needsSameFinger) plan.push({mode:'samefinger', label:'Same-finger repair'});
+  else plan.push({mode:'adaptive', label:'Adaptive repair'});
+  if(bottlenecks.needsRhythm) plan.push({mode:'rhythm', label:'Cadence reset'});
+  else plan.push({mode:'burst', label:'Speed exposure'});
+  if(bottlenecks.needsNumbers && DATA.stage >= 2) plan.push({mode:'numbers', label:'Numbers & symbols'});
+  if(bottlenecks.needsFlow) plan.push({mode:'flow', label:'Flow block'});
+  else plan.push({mode:'wordchunk', label:'Word fluency'});
+  plan.push({mode:'bigram', label:'Cooldown patterns'});
+  return {
+    label: bottlenecks.needsAccuracy ? 'Repair accuracy, then rebuild speed' : bottlenecks.needsRhythm ? 'Stabilize rhythm, then extend flow' : 'Balanced speed and fluency session',
+    note: bottlenecks.profile.weakKeys[0] ? `Focus on ${bottlenecks.profile.weakKeys[0].key.toUpperCase()}, ${bottlenecks.profile.weakBigrams[0]?.bg?.toUpperCase()||'a weak bigram'} and controlled recovery after mistakes.` : 'Build consistency first, then chase speed.',
+    steps: plan.slice(0,5)
+  };
+}
+function renderDailyPlanUI(planObj){
+  const stepsEl = $('daily-plan-steps');
+  const nameEl = $('daily-plan-name');
+  const copyEl = $('daily-plan-copy');
+  if(!stepsEl || !nameEl || !copyEl) return;
+  nameEl.textContent = planObj.label;
+  copyEl.textContent = planObj.note;
+  stepsEl.innerHTML = planObj.steps.map((s,i)=>`<span class="daily-step ${i===0?'active':''}">${s.label}</span>`).join('');
+}
+function startDailySession(){
+  const planObj = buildDailyPlan();
+  dailySession = {active:true, plan:planObj.steps, index:0, label:planObj.label, note:planObj.note};
+  DATA.dailyHistory.lastPlanDate = getDateKey();
+  DATA.dailyHistory.lastPlanModes = planObj.steps.map(s=>s.mode);
+  saveData();
+  startExercise(planObj.steps[0].mode, {daily:true});
+}
+function continueDailySession(){
+  if(!dailySession.active) return;
+  dailySession.index++;
+  if(dailySession.index >= dailySession.plan.length){
+    dailySession.active = false;
+    showToast('Daily session complete');
+    showScreen('menu');
+    updateMenuDisplay();
+    return;
+  }
+  startExercise(dailySession.plan[dailySession.index].mode, {daily:true});
+}
+function getSessionDiagnosis(session){
+  const lines = [];
+  if((session.errorRate||0) > 8) lines.push('Too many errors are eating your speed. Slow down and finish words cleanly.');
+  else if((session.netWpm||0) + 8 < (session.rawWpm||0)) lines.push('You have speed available, but error recovery is leaking net WPM.');
+  if((session.consistencyScore||100) < 62) lines.push('Rhythm is unstable. Your pauses are probably bigger than your finger-speed limit.');
+  if(session.slowBigrams?.length) lines.push(`Your slowest transition was ${session.slowBigrams[0][0].toUpperCase()}. Drill that cluster in isolation.`);
+  const weakKey = Object.entries(session.keyStats||{}).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts))[0];
+  if(weakKey) lines.push(`Key focus: ${weakKey[0].toUpperCase()} is under control less often than the rest.`);
+  return lines.slice(0,3);
+}
+function registerRecentOutcome(ok){
+  ex.recentOutcomes.push(ok ? 1 : 0);
+  if(ex.recentOutcomes.length > 18) ex.recentOutcomes.shift();
+}
+function maybeInjectRepairBlock(){
+  if(!['word','adaptive','daily','slowbigram','problem'].includes(ex.mode) && !ex.dailyMode) return;
+  if(ex.liveAdjustments >= 2 || ex.recentOutcomes.length < 10) return;
+  const recentAcc = ex.recentOutcomes.reduce((a,b)=>a+b,0)/ex.recentOutcomes.length;
+  if(recentAcc >= 0.8) return;
+  const weakKey = Object.entries(ex.errorKeys).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const weakBigram = Object.entries(ex.sessionBigramStats).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts))[0]?.[0];
+  let repairWords = [];
+  if(weakBigram){
+    repairWords = TOP_1000.filter(w=>w.includes(weakBigram)).slice(0,6);
+  }
+  if(repairWords.length < 4 && weakKey){
+    repairWords.push(...getCorpus('accuracy').filter(w=>w.includes(weakKey)).slice(0,6));
+  }
+  repairWords = [...new Set(repairWords)].slice(0,6);
+  if(!repairWords.length) return;
+  const insertion = ' ' + repairWords.join(' ') + ' ';
+  ex.text = ex.text.slice(0, ex.pos) + insertion + ex.text.slice(ex.pos);
+  ex.charWordMap = null;
+  ex.liveAdjustments++;
+  ex.injectedRepairWords.push(...repairWords);
+  ex.recentOutcomes = [];
+  showToast(`Inserted repair block for ${weakBigram?.toUpperCase() || weakKey?.toUpperCase()}`);
+}
+function getLiveDiagnosis(){
+  if(ex.recentOutcomes.length < 8) return '';
+  const recentAcc = ex.recentOutcomes.reduce((a,b)=>a+b,0)/ex.recentOutcomes.length;
+  const weakKey = Object.entries(ex.errorKeys).sort((a,b)=>b[1]-a[1])[0]?.[0];
+  const weakBigram = Object.entries(ex.sessionBigramStats).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts))[0]?.[0];
+  if(recentAcc < 0.7) return `Reset your pace. You are forcing ${weakBigram?.toUpperCase() || weakKey?.toUpperCase() || 'the current pattern'}.`;
+  if(recentAcc < 0.82) return `Stay under control. Clean up ${weakKey?.toUpperCase() || 'the next few words'} before pushing speed.`;
+  return '';
+}
+function getAdaptiveProfile(){
+  const keyStats = DATA.keyStats||{};
+  const bigramStats = DATA.bigramStats||{};
+  const trigramStats = DATA.trigramStats||{};
+  const weakKeys = Object.entries(keyStats)
+    .filter(([,v])=>v.attempts>=8)
+    .map(([k,v])=>({key:k, acc:v.hits/v.attempts, attempts:v.attempts}))
+    .sort((a,b)=>a.acc-b.acc || b.attempts-a.attempts)
+    .slice(0,4);
+  const weakBigrams = Object.entries(bigramStats)
+    .filter(([,v])=>v.attempts>=5)
+    .map(([bg,v])=>({bg, acc:v.hits/v.attempts, attempts:v.attempts}))
+    .sort((a,b)=>a.acc-b.acc || b.attempts-a.attempts)
+    .slice(0,4);
+  const weakTrigrams = Object.entries(trigramStats)
+    .filter(([,v])=>v.attempts>=4)
+    .map(([tg,v])=>({tg, acc:v.hits/v.attempts, attempts:v.attempts}))
+    .sort((a,b)=>a.acc-b.acc || b.attempts-a.attempts)
+    .slice(0,4);
+  const slowFingers = Object.entries(DATA.fingerLatencies||{})
+    .filter(([,v])=>v.count>=5)
+    .map(([finger,v])=>({finger, ms:v.sum/v.count}))
+    .sort((a,b)=>b.ms-a.ms)
+    .slice(0,2);
+  return {weakKeys, weakBigrams, weakTrigrams, slowFingers};
+}
+function generateAdaptiveWords(count, cfg){
+  const profile = getAdaptiveProfile();
+  const pool = getCorpus('accuracy');
+  const targeted = [];
+  profile.weakKeys.forEach(({key})=> targeted.push(...getCorpus('accuracy').filter(w=>w.includes(key)).slice(0,24)));
+  profile.weakBigrams.forEach(({bg})=> targeted.push(...TOP_1000.filter(w=>w.includes(bg)).slice(0,24)));
+  profile.weakTrigrams.forEach(({tg})=> targeted.push(...getCorpus('flow').filter(w=>w.includes(tg)).slice(0,18)));
+  if(cfg.includeNumbers) targeted.push(...NUMBER_TOKENS);
+  const src = [...new Set(targeted)].filter(Boolean);
+  const finalPool = src.length >= 8 ? src : pool;
+  return buildNaturalWordRun(buildProgressivePool(finalPool, count), cfg, {allowCaps:false, forceFirstLower:true});
+}
 
 function isLeftHandWord(w){
   return w.split('').every(ch => LEFT_HAND_KEYS.has(ch.toLowerCase()));
@@ -787,20 +1375,53 @@ const BURST_MIN_ACCURACY = 85;
 // ═══════════════════════════════════════════════
 // EXERCISE ENGINE
 // ═══════════════════════════════════════════════
-let ex = {
-  mode: null, text: '', pos: 0, errors: 0, correctChars: 0,
-  startTime: null, timerInterval: null, audioCtx: null,
-  active: false, perfectStreak: 0,
-  errorMap: {}, // char position → count
-  errorKeys: {}, // key → count
-  gateMode: false, gateReq: null,
-  rhythmInterval: null, bpmBeats: 0,
-  burstWords: [], burstIdx: 0, burstWordErrors: 0, burstWordStart: 0,
-  consecutivePerfect: 0,
-  sessionPerfectStreak: 0, longestSessionStreak: 0,
-  wordsTyped: 0, wordErrors: 0,
-  currentWord: '', wordPos: 0,
-};
+let ex = {mode:null, active:false, audioCtx:null, timerInterval:null, rhythmInterval:null};
+
+function bumpStat(map, key, hit){
+  if(!key) return;
+  if(!map[key]) map[key] = {hits:0, attempts:0};
+  map[key].attempts++;
+  if(hit) map[key].hits++;
+}
+function recordAccuracyEvent(expected, typed, wasCorrect){
+  if(!expected) return;
+  bumpStat(ex.sessionKeyStats, expected.toLowerCase(), wasCorrect);
+  const prev1 = ex.text[ex.pos-1];
+  const prev2 = ex.text[ex.pos-2];
+  if(prev1 && prev1 !== ' ' && expected !== ' ') bumpStat(ex.sessionBigramStats, (prev1+expected).toLowerCase(), wasCorrect);
+  if(prev2 && prev1 && prev2 !== ' ' && prev1 !== ' ' && expected !== ' ') bumpStat(ex.sessionTrigramStats, (prev2+prev1+expected).toLowerCase(), wasCorrect);
+  const sec = Math.max(0, Math.floor((Date.now() - (ex.startTime||Date.now()))/1000));
+  if(!ex.timeline[sec]) ex.timeline[sec] = {correct:0, errors:0, total:0};
+  ex.timeline[sec].total++;
+  if(wasCorrect) ex.timeline[sec].correct++;
+  else ex.timeline[sec].errors++;
+  if(!wasCorrect && typed && typed.length===1) ex.typedErrorKeys[typed.toLowerCase()] = (ex.typedErrorKeys[typed.toLowerCase()]||0)+1;
+}
+function getSessionMetricSnapshot(){
+  const elapsedMin = Math.max(1/60, ((Date.now() - (ex.startTime||Date.now()))/60000));
+  const rawWpm = Math.round((ex.totalTypedChars/5)/elapsedMin);
+  const netWpm = Math.max(0, Math.round(rawWpm - (ex.errors/elapsedMin)));
+  const errorRate = (ex.totalTypedChars + ex.errors) > 0 ? ((ex.errors / (ex.totalTypedChars + ex.errors))*100) : 0;
+  return {rawWpm, netWpm, errorRate};
+}
+function getPeakBurstWpm(timeline){
+  const buckets = Array.isArray(timeline) ? timeline.filter(Boolean) : [];
+  if(!buckets.length) return 0;
+  let best = 0;
+  for(let i=0;i<buckets.length;i++){
+    let chars = 0;
+    let secs = 0;
+    for(let j=i;j<Math.min(buckets.length, i+5);j++){
+      chars += buckets[j].correct||0;
+      secs++;
+    }
+    if(secs > 0){
+      const wpm = Math.round((chars/5)/(secs/60));
+      if(wpm > best) best = wpm;
+    }
+  }
+  return best;
+}
 
 function recordKeystroke(ch){
   const now = Date.now();
@@ -833,9 +1454,11 @@ function playClick(freq=1200, dur=0.03){
     const ctx = getAudioCtx();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
+    const profile = DATA.settings.soundProfile || 'classic';
     o.connect(g); g.connect(ctx.destination);
-    o.frequency.value = freq;
-    g.gain.setValueAtTime(.15, ctx.currentTime);
+    o.type = profile === 'soft' ? 'sine' : profile === 'sharp' ? 'square' : 'triangle';
+    o.frequency.value = profile === 'soft' ? freq*0.75 : profile === 'sharp' ? freq*1.1 : freq;
+    g.gain.setValueAtTime(profile === 'soft' ? .08 : .15, ctx.currentTime);
     g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+dur);
     o.start(); o.stop(ctx.currentTime+dur);
   }catch(e){ console.error('[TypeForge]', e); }
@@ -847,92 +1470,86 @@ function playError(){
     const ctx = getAudioCtx();
     const o = ctx.createOscillator();
     const g = ctx.createGain();
+    const profile = DATA.settings.soundProfile || 'classic';
     o.connect(g); g.connect(ctx.destination);
-    o.type = 'sawtooth';
-    o.frequency.value = 180;
-    g.gain.setValueAtTime(.1, ctx.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
+    o.type = profile === 'soft' ? 'triangle' : 'sawtooth';
+    o.frequency.value = profile === 'sharp' ? 150 : 180;
+    g.gain.setValueAtTime(profile === 'soft' ? .06 : .1, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+(profile === 'soft' ? 0.08 : 0.12));
     o.start(); o.stop(ctx.currentTime+0.12);
   }catch(e){ console.error('[TypeForge]', e); }
 }
 
-function startExercise(mode, opts={}){
-  ex.mode = mode;
-  ex.gateMode = opts.gate||false;
-  ex.gateReq = opts.gateReq||null;
-  ex.pendingGate = false; ex.pendingGateReq = null;
-  ex.pos = 0; ex.errors = 0; ex.correctChars = 0;
-  ex.startTime = null; ex.active = true;
-  ex.errorMap = {}; ex.errorKeys = {};
-  ex.perfectStreak = 0; ex.sessionPerfectStreak = 0;
-  ex.longestSessionStreak = 0;
-  ex.wordsTyped = 0; ex.wordErrors = 0;
-  ex.consecutivePerfect = 0;
-  ex.lastKeystrokeTime = null; ex.ikiList = [];
-  ex.bigramBuffer = ''; ex.sessionBigramLatencies = {};
-  ex.currentWordHadError = false; ex.wordPerfectMap = {}; ex.charWordMap = null;
-  // Precision mode state
-  ex.precWordList      = [];
-  ex.precWordIdx       = 0;
-  ex.precWordStart     = 0;
-  ex.precWordHadError  = false;
-  ex.precWordAttempts  = {};
-  ex.precWordPerfect   = {};
-  ex.precPerfectCount  = 0;
-  ex.precQueue         = [];
-  ex.precRequeuePass   = 0;
-  ex.precLastFailBigram= {};
-  ex.precTotalWords    = 0;
-  ex.precWordStartTime = null;   // when first correct key of current word pressed
-  ex.precWordWPM       = {};     // wIdx → WPM for the clean completion run
-  ex.precWordErrors    = {};     // wIdx → total error keystrokes
-  ex.precRetryOf       = {};     // new wIdx → original wIdx
-  // Word Flow (wordchunk) mode state
-  ex.wcWords=[]; ex.wcWordIdx=0; ex.wcCurrentWord=''; ex.wcWordAttempt=1;
-  ex.wcWordStartTime=null; ex.wcWordPos=0; ex.wcStreak=0;
-  ex.wcBestStreak=0; ex.wcPerfectCount=0; ex.wcWordResults=[];
+// Fresh exercise state — used by startExercise to reset every per-session field.
+function defaultExState(){
+  return {
+    audioCtx: ex.audioCtx,   // preserved across sessions
+    timerInterval: null, rhythmInterval: null,
+    mode: null, text: '', pos: 0, errors: 0, correctChars: 0,
+    startTime: null, active: true, perfectStreak: 0,
+    sessionPerfectStreak: 0, longestSessionStreak: 0,
+    errorMap: {}, errorKeys: {},
+    bpmBeats: 0,
+    burstWords: [], burstIdx: 0, burstWordErrors: 0, burstWordStart: 0,
+    wordsTyped: 0, wordErrors: 0,
+    currentWord: '', wordPos: 0,
+    lastKeystrokeTime: null, ikiList: [],
+    bigramBuffer: '', sessionBigramLatencies: {},
+    sessionKeyStats: {}, sessionBigramStats: {}, sessionTrigramStats: {},
+    timeline: [], totalTypedChars: 0, backspaces: 0, typedErrorKeys: {},
+    currentWordHadError: false, wordPerfectMap: {}, charWordMap: null,
+    wordErrorCounts: {},
+    recentOutcomes: [], liveAdjustments: 0, injectedRepairWords: [],
+    // Precision
+    precWordList: [], precWordIdx: 0, precWordStart: 0, precWordHadError: false,
+    precWordAttempts: {}, precWordPerfect: {}, precPerfectCount: 0,
+    precQueue: [], precRequeuePass: 0, precLastFailBigram: {},
+    precTotalWords: 0, precWordStartTime: null,
+    precWordWPM: {}, precWordErrors: {}, precRetryOf: {},
+    // Word Flow
+    wcWords: [], wcWordIdx: 0, wcCurrentWord: '', wcWordAttempt: 1,
+    wcWordStartTime: null, wcWordPos: 0, wcStreak: 0,
+    wcBestStreak: 0, wcPerfectCount: 0, wcWordResults: [],
+  };
+}
 
-  document.getElementById('stat-wpm').textContent = '0';
+function startExercise(mode, opts={}){
+  ex = defaultExState();
+  ex.mode = mode;
+  ex.cfg = getSessionConfig(mode);
+  ex.dailyMode = !!opts.daily;
+
+  $('stat-wpm').textContent = '0';
   const _wpmLbl = document.querySelector('#stat-wpm + .lbl');
   if(_wpmLbl) _wpmLbl.textContent = 'WPM';
-  document.getElementById('stat-acc').textContent = '100%';
-  document.getElementById('stat-err').textContent = '0';
-  document.getElementById('ex-timer').textContent = '0:00';
-  document.getElementById('ex-progress-fill').style.width = '0%';
-  document.getElementById('ex-message').textContent = '';
-  document.getElementById('ex-burst-word').style.display = 'none';
-  document.getElementById('ex-rhythm-pulse').style.display = 'none';
-  document.getElementById('finger-guide').style.display = 'none';
-  document.getElementById('word-finger-strip').style.display = 'none';
-
-  if(ex.timerInterval) clearInterval(ex.timerInterval);
-  if(ex.rhythmInterval) clearInterval(ex.rhythmInterval);
+  $('stat-acc').textContent = '100%';
+  $('stat-err').textContent = '0';
+  $('ex-timer').textContent = '0:00';
+  $('ex-progress-fill').style.width = '0%';
+  $('ex-message').textContent = '';
+  $('ex-burst-word').style.display = 'none';
+  $('ex-rhythm-pulse').style.display = 'none';
+  $('finger-guide').style.display = 'none';
+  $('word-finger-strip').style.display = 'none';
 
   generateExerciseText(mode, opts);
 
+  $('precision-goal').style.display = mode === 'precision' ? 'flex' : 'none';
+  $('precision-insight').style.display = 'none';
+  $('wc-display').style.display = 'none';
   if(mode === 'precision'){
     ex.precWordList = ex.text.split(' ');
-    ex.precWordList.forEach((_,i) => { ex.precWordAttempts[i] = 0; });
-    document.getElementById('precision-goal').style.display = 'flex';
-    document.getElementById('precision-insight').style.display = 'none';
-    document.getElementById('wc-display').style.display = 'none';
-  } else if(mode === 'wordchunk'){
-    document.getElementById('precision-goal').style.display = 'none';
-    document.getElementById('precision-insight').style.display = 'none';
-    document.getElementById('wc-display').style.display = 'none';
-  } else {
-    document.getElementById('precision-goal').style.display = 'none';
-    document.getElementById('precision-insight').style.display = 'none';
-    document.getElementById('wc-display').style.display = 'none';
+    ex.precWordList.forEach((_,i)=>{ ex.precWordAttempts[i] = 0; });
   }
 
-  document.getElementById('ex-mode-label').textContent = modeLabelName(mode);
+  $('ex-mode-label').textContent = modeLabelName(mode);
 
   // Build visual keyboard
   buildVisualKeyboard();
-  const vk = document.getElementById('visual-keyboard');
-  const vkt = document.getElementById('vk-toggle');
-  vk.style.display = DATA.settings.showVK ? 'block' : 'none';
+  const vk = $('visual-keyboard');
+  const vkt = $('vk-toggle');
+  const zen = !!DATA.settings.zenMode && !['homerow','precision','wordchunk','rhythm'].includes(mode);
+  vk.style.display = (!zen && DATA.settings.showVK) ? 'block' : 'none';
   vkt.style.display = 'block';
 
   showScreen('exercise');
@@ -949,198 +1566,183 @@ function startExercise(mode, opts={}){
     renderExText();
   }
 
-  // Gate / timed-mode timer
-  if(ex.gateMode || mode === 'timed1' || mode === 'timed3'){
-    let gateTime = ex.gateMode ? 60 : (mode === 'timed3' ? 180 : 60);
+  // Timed mode countdown
+  if(mode === 'timed1' || mode === 'timed3'){
+    let remaining = ex.cfg.duration;
+    $('ex-timer').textContent = formatTime(remaining);
     ex.timerInterval = setInterval(()=>{
-      gateTime--;
-      document.getElementById('ex-timer').textContent = formatTime(gateTime);
-      if(gateTime <= 0){ endExercise(false); }
+      remaining--;
+      $('ex-timer').textContent = formatTime(remaining);
+      if(remaining <= 0){ endExercise(false); }
     }, 1000);
   }
 }
 
 function maybeCapitalize(word, rate){
-  return Math.random() < rate ? word[0].toUpperCase() + word.slice(1) : word;
+  return rate > 0 && /^[a-z]/.test(word) ? word[0].toUpperCase() + word.slice(1) : word;
 }
 
-function generateExerciseText(mode, opts){
-  let words = [];
-  const stage = DATA.stage;
+// Helper used by most modes — pool → progressive sampling → optional problem injection → natural decoration → join.
+function basicTextRun(pool, opts={}){
+  const cfg = ex.cfg;
+  let words = buildProgressivePool(pool, opts.count || cfg.wordCount);
+  const probs = opts.problemWords;
+  if(probs?.length){
+    const rate = opts.injectRate ?? PROBLEM_WORD_INJECT_RATE;
+    for(let i=0;i<words.length;i++){
+      if(Math.random() < rate) words[i] = sample(probs);
+    }
+  }
+  return buildNaturalWordRun(words,
+    {...cfg, ...(opts.cfgOverrides||{})},
+    {allowCaps:!!opts.allowCaps, forceFirstLower:true, ...(opts.runOpts||{})}
+  ).join(' ');
+}
+function pickHandProblemWords(filter){
+  return Object.keys(DATA.problemPool).filter(w => DATA.problemPool[w] > 0 && filter(w));
+}
 
-  if(mode === 'homerow'){
-    const seq = HOME_ROW_SEQUENCES[Math.floor(Math.random()*HOME_ROW_SEQUENCES.length)];
-    ex.text = (seq+' '+seq).trim();
-  } else if(mode === 'bigram'){
+const MODE_TEXT_BUILDERS = {
+  homerow: () => { const s = sample(HOME_ROW_SEQUENCES); return (s+' '+s).trim(); },
+  adaptive: () => generateAdaptiveWords(ex.cfg.wordCount, ex.cfg).join(' '),
+  bigram: (opts) => {
+    const stage = DATA.stage;
     const bg = BIGRAMS[opts.bigramIdx !== undefined ? opts.bigramIdx % BIGRAMS.length : Math.floor(Math.random()*Math.min(BIGRAMS.length, stage*3+3))];
     const bwords = (BIGRAM_WORDS[bg]||bg+' '+bg).split(' ');
-    words = [];
-    for(let i=0;i<30;i++) words.push(bwords[i%bwords.length]);
-    ex.text = words.join(' ');
-  } else if(mode === 'word'){
-    const pool = stage >= 3 ? TOP_1000 : stage >= 2 ? TOP_500 : WORDS_200;
-    words = [];
-    const problemWords = Object.keys(DATA.problemPool).filter(w=>DATA.problemPool[w]>0);
-    const capRate = stage >= 4 ? 0.30 : stage >= 3 ? 0.20 : 0;
-    for(let i=0;i<40;i++){
-      let w;
-      if(problemWords.length && Math.random()<PROBLEM_WORD_INJECT_RATE){
-        w = problemWords[Math.floor(Math.random()*problemWords.length)];
-      } else {
-        w = pool[Math.floor(Math.random()*pool.length)];
-      }
-      words.push(maybeCapitalize(w, capRate));
+    const words = Array.from({length:ex.cfg.wordCount}, (_,i)=>bwords[i%bwords.length]);
+    return buildNaturalWordRun(words, ex.cfg, {allowCaps:false, forceFirstLower:true}).join(' ');
+  },
+  word: () => {
+    const stage = DATA.stage, cfg = ex.cfg;
+    const pool = getCorpus('frequency').filter(w => getWordPoolForStage(stage).includes(w) || stage >= 2);
+    const capRate = stage>=4 ? Math.min(cfg.capitalizationRate,.09) : stage>=3 ? Math.min(cfg.capitalizationRate,.05) : 0;
+    return basicTextRun(pool, {
+      problemWords: pickProblemWords(pool, Math.ceil(cfg.wordCount*0.18)),
+      cfgOverrides:{capitalizationRate:capRate}, allowCaps:capRate>0
+    });
+  },
+  burst: () => {
+    const pool = getCorpus('accuracy').filter(w=>w.length<=6);
+    const decCfg = {...ex.cfg, capitalizationRate:0};
+    ex.burstWords = buildProgressivePool(pool, 80).map(w=>decorateToken(w, decCfg, createDecorState(decCfg, {allowCaps:false})));
+    ex.burstIdx = 0; ex.burstWordErrors = 0;
+    return ex.burstWords[0];
+  },
+  rhythm: () => basicTextRun(getCorpus('flow'),
+    {count:ex.cfg.wordCount+10, cfgOverrides:{capitalizationRate:Math.min(ex.cfg.capitalizationRate,.04)}}),
+  samefinger: () => {
+    const src = getCorpus('samefinger');
+    const finalSrc = src.length ? src : BIGRAMS.flatMap(bg=>(BIGRAM_WORDS[bg]||'').split(' ')).filter(Boolean);
+    return basicTextRun(finalSrc, {cfgOverrides:{capitalizationRate:0}});
+  },
+  numbers: () => basicTextRun(
+    [...getCorpus('numbers'),'7/16','Ctrl+S','12:45','99%','256kb','14.8','A1','B2','C++'],
+    {cfgOverrides:{includeNumbers:true,includeSymbols:true,capitalizationRate:0}}),
+  punctuation: () => basicTextRun(getCorpus('punctuation'), {
+    cfgOverrides:{includePunctuation:true, punctuationDensity:0.45,
+      capitalizationRate:Math.min(Math.max(ex.cfg.capitalizationRate,.04),.08)},
+    allowCaps:true, runOpts:{startReady:true}
+  }),
+  flow: () => {
+    const stage = DATA.stage, cfg = ex.cfg;
+    if(stage >= 4) return sample(FLOW_PASSAGES);
+    let joined = Array.from({length:5}, ()=>sample(FLOW_SENTENCES)).join(' ');
+    if(stage >= 3) joined = joined.replace(/(^|[.]\s+)([a-z])/g, (_, p, ch) => p + ch.toUpperCase());
+    if(cfg.includeNumbers || cfg.includeSymbols){
+      const extras = basicTextRun(getWordPoolForStage(stage), {
+        count: Math.max(3, Math.round(cfg.wordCount*0.15)),
+        cfgOverrides:{capitalizationRate:0}
+      });
+      joined += ' ' + extras;
     }
-    ex.text = words.join(' ');
-  } else if(mode === 'burst'){
-    const pool = stage >= 2 ? TOP_500 : WORDS_200;
-    ex.burstWords = [];
-    for(let i=0;i<80;i++) ex.burstWords.push(pool[Math.floor(Math.random()*pool.length)]);
-    ex.text = ex.burstWords[0];
-    ex.burstIdx = 0;
-    ex.burstWordErrors = 0;
-  } else if(mode === 'rhythm'){
-    const pool = stage >= 2 ? TOP_500 : WORDS_200;
-    words = [];
-    for(let i=0;i<50;i++) words.push(pool[Math.floor(Math.random()*pool.length)]);
-    ex.text = words.join(' ');
-  } else if(mode === 'flow' || mode === 'gate'){
-    if(stage >= 4){
-      const p = FLOW_PASSAGES[Math.floor(Math.random()*FLOW_PASSAGES.length)];
-      ex.text = p;
-    } else {
-      const sentences = [];
-      const n = ex.gateMode ? 3 : 5;
-      for(let i=0;i<n;i++) sentences.push(FLOW_SENTENCES[Math.floor(Math.random()*FLOW_SENTENCES.length)]);
-      let joined = sentences.join(' ');
-      if(stage >= 3){
-        joined = joined.replace(/(^|[.]\s+)([a-z])/g, (_, p, ch) => p + ch.toUpperCase());
-      }
-      ex.text = joined;
-    }
-  } else if(mode === 'timed1' || mode === 'timed3'){
-    const pool = stage >= 3 ? TOP_1000 : stage >= 2 ? TOP_500 : WORDS_200;
-    const count = (mode === 'timed3' ? 3 : 1) * 100;
-    const words = [];
-    for(let i=0;i<count;i++) words.push(pool[Math.floor(Math.random()*pool.length)]);
-    ex.text = words.join(' ');
-  } else if(mode === 'custom'){
-    const pool = (DATA.customWords||'').replace(/\n+/g,' ').split(/\s+/).filter(w=>w.length>0);
-    const src = pool.length ? pool : WORDS_200;
-    const words = [];
-    for(let i=0;i<50;i++) words.push(src[Math.floor(Math.random()*src.length)]);
-    ex.text = words.join(' ');
-  } else if(mode === 'slowbigram'){
+    return joined;
+  },
+  timed1: () => {
+    const stage = DATA.stage, cfg = ex.cfg;
+    const pool = [...new Set([...getCorpus('frequency'), ...getCorpus('flow')])];
+    const count = Math.max(cfg.wordCount, Math.round((cfg.duration/60) * 100));
+    return basicTextRun(pool, {count,
+      cfgOverrides:{capitalizationRate:Math.min(cfg.capitalizationRate,.05)},
+      allowCaps: stage>=4 && cfg.capitalizationRate>0});
+  },
+  custom: () => {
+    const pool = (DATA.customWords||'').replace(/\n+/g,' ').split(/\s+/).filter(Boolean);
+    return basicTextRun(pool.length ? pool : WORDS_200, {
+      cfgOverrides:{capitalizationRate:Math.min(ex.cfg.capitalizationRate,.04)},
+      allowCaps: ex.cfg.capitalizationRate > 0.03
+    });
+  },
+  slowbigram: () => {
     const bgData = Object.entries(DATA.bigramLatencies||{})
       .filter(([,v])=>v.count>=3)
       .sort((a,b)=>(b[1].sum/b[1].count)-(a[1].sum/a[1].count))
       .slice(0,5).map(([bg])=>bg);
-    const slowBgs = bgData.length >= 2 ? bgData : BIGRAMS.slice(-5);
+    const slowBgs = bgData.length>=2 ? bgData : BIGRAMS.slice(-5);
     const bgWordPool = [];
     slowBgs.forEach(bg=>{
       const bw = BIGRAM_WORDS[bg];
       if(bw) bgWordPool.push(...bw.split(' '));
       else bgWordPool.push(...TOP_1000.filter(w=>w.includes(bg)));
     });
-    const uniqueBgWords = [...new Set(bgWordPool)].filter(w=>w.length>0);
-    const src = uniqueBgWords.length >= 5 ? uniqueBgWords : TOP_1000;
-    words = [];
-    for(let i=0;i<40;i++){
-      if(i<24 && uniqueBgWords.length>=5){
-        words.push(src[Math.floor(Math.random()*src.length)]);
-      } else {
-        words.push(TOP_1000[Math.floor(Math.random()*TOP_1000.length)]);
-      }
-    }
-    ex.text = words.join(' ');
-  } else if(mode === 'problem'){
-    const errKeys = Object.entries(DATA.keyErrorCounts)
-      .sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
-    if(errKeys.length === 0){
-      const pool = stage >= 2 ? TOP_500 : WORDS_200;
-      words = [];
-      for(let i=0;i<40;i++) words.push(pool[Math.floor(Math.random()*pool.length)]);
-      ex.text = words.join(' ');
-    } else {
-      const allWords = TOP_1000;
-      const targeted = allWords.filter(w=>errKeys.some(k=>w.includes(k)));
-      const picked = targeted.length > 5 ? targeted : allWords;
-      words = [];
-      for(let i=0;i<40;i++) words.push(picked[Math.floor(Math.random()*picked.length)]);
-      ex.text = words.join(' ');
-    }
-  } else if(mode === 'precision'){
-    const pool = DATA.stage >= 3 ? TOP_1000 : DATA.stage >= 2 ? TOP_500 : WORDS_200;
-    const count = 20;
-    words = [];
+    const uniqueBgWords = [...new Set(bgWordPool)].filter(Boolean);
+    const src = uniqueBgWords.length>=5 ? uniqueBgWords : TOP_1000;
+    const words = Array.from({length:ex.cfg.wordCount}, (_,i)=>
+      sample(i<24 && uniqueBgWords.length>=5 ? src : TOP_1000));
+    return buildNaturalWordRun(words, {...ex.cfg, capitalizationRate:0}, {allowCaps:false, forceFirstLower:true}).join(' ');
+  },
+  problem: () => {
+    const errKeys = Object.entries(DATA.keyErrorCounts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(e=>e[0]);
+    const stage = DATA.stage;
+    if(!errKeys.length) return basicTextRun(stage>=2?TOP_500:WORDS_200, {cfgOverrides:{capitalizationRate:0}});
+    const targeted = TOP_1000.filter(w=>errKeys.some(k=>w.includes(k)));
+    return basicTextRun(targeted.length>5 ? targeted : TOP_1000, {cfgOverrides:{capitalizationRate:0}});
+  },
+  precision: () => {
+    const pool = getCorpus('accuracy');
+    const count = Math.max(16, Math.min(28, ex.cfg.wordCount));
     const pWords = Object.keys(DATA.problemPool).filter(w => DATA.problemPool[w] > 0);
-    for(let i = 0; i < count; i++){
-      if(pWords.length && Math.random() < 0.4)
-        words.push(pWords[Math.floor(Math.random()*pWords.length)]);
-      else
-        words.push(pool[Math.floor(Math.random()*pool.length)]);
-    }
-    ex.text = words.join(' ');
-  } else if(mode === 'wordchunk'){
-    const wcPool = WORDS_200.filter(w => w.length >= 3 && w.length <= 6);
-    const pWords = Object.keys(DATA.problemPool).filter(w => DATA.problemPool[w] > 0 && w.length >= 3 && w.length <= 6);
-    const picked = [];
-    const used = new Set();
-    while(picked.length < 25){
-      let w;
-      if(pWords.length && Math.random() < 0.20){
-        w = pWords[Math.floor(Math.random()*pWords.length)];
-      } else {
-        w = wcPool[Math.floor(Math.random()*wcPool.length)];
-      }
+    return Array.from({length:count}, ()=>
+      (pWords.length && Math.random() < 0.4) ? sample(pWords) : sample(pool)).join(' ');
+  },
+  wordchunk: () => {
+    const wcPool = getCorpus('accuracy').filter(w => w.length>=3 && w.length<=6);
+    const pWords = Object.keys(DATA.problemPool).filter(w => DATA.problemPool[w]>0 && w.length>=3 && w.length<=6);
+    const target = Math.max(18, Math.min(32, ex.cfg.wordCount));
+    const picked = [], used = new Set();
+    while(picked.length < target){
+      const w = (pWords.length && Math.random() < 0.20) ? sample(pWords) : sample(wcPool);
       if(!used.has(w)){ used.add(w); picked.push(w); }
     }
-    // shuffle
-    for(let i=picked.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [picked[i],picked[j]]=[picked[j],picked[i]]; }
-    ex.text = picked.join(' ');
-  } else if(mode === 'lefthand'){
-    const pool = LEFT_HAND_WORDS.length > 0 ? LEFT_HAND_WORDS : WORDS_200.filter(isLeftHandWord);
-    const problemWords = Object.keys(DATA.problemPool)
-      .filter(w => DATA.problemPool[w] > 0 && isLeftHandWord(w));
-    words = [];
-    for(let i = 0; i < 40; i++){
-      let w;
-      if(problemWords.length && Math.random() < PROBLEM_WORD_INJECT_RATE)
-        w = problemWords[Math.floor(Math.random() * problemWords.length)];
-      else
-        w = pool[Math.floor(Math.random() * pool.length)];
-      words.push(w);
-    }
-    ex.text = words.join(' ');
-  } else if(mode === 'righthand'){
-    const pool = RIGHT_HAND_WORDS.length > 0 ? RIGHT_HAND_WORDS : TOP_1000.filter(isRightHandWord);
-    const problemWords = Object.keys(DATA.problemPool)
-      .filter(w => DATA.problemPool[w] > 0 && isRightHandWord(w));
-    words = [];
-    for(let i = 0; i < 40; i++){
-      let w;
-      if(problemWords.length && Math.random() < PROBLEM_WORD_INJECT_RATE)
-        w = problemWords[Math.floor(Math.random() * problemWords.length)];
-      else
-        w = pool[Math.floor(Math.random() * pool.length)];
-      words.push(w);
-    }
-    ex.text = words.join(' ');
-  }
-  ex.text = ex.text.replace(/\s+/g,' ').trim();
+    return shuffle(picked).join(' ');
+  },
+  lefthand: () => basicTextRun(
+    LEFT_HAND_WORDS.length ? LEFT_HAND_WORDS : WORDS_200.filter(isLeftHandWord),
+    {problemWords: pickHandProblemWords(isLeftHandWord), cfgOverrides:{capitalizationRate:0}}),
+  righthand: () => basicTextRun(
+    RIGHT_HAND_WORDS.length ? RIGHT_HAND_WORDS : TOP_1000.filter(isRightHandWord),
+    {problemWords: pickHandProblemWords(isRightHandWord), cfgOverrides:{capitalizationRate:0}}),
+};
+MODE_TEXT_BUILDERS.timed3 = MODE_TEXT_BUILDERS.timed1;
+
+function generateExerciseText(mode, opts){
+  ex.cfg = ex.cfg || getSessionConfig(mode);
+  const builder = MODE_TEXT_BUILDERS[mode];
+  if(builder) ex.text = builder(opts || {});
+  ex.text = (ex.text||'').replace(/\s+/g,' ').trim();
 }
 
 function modeLabelName(m){
-  return {homerow:'HOME ROW FOUNDATION',bigram:'LETTER PATTERN DRILL',
+  return {daily:'DAILY SESSION',homerow:'HOME ROW FOUNDATION',bigram:'LETTER PATTERN DRILL',
     word:'WORD TRAINING',burst:'SPEED BURST',rhythm:'RHYTHM TYPING',
-    flow:'FLOW TYPING',problem:'PROBLEM KEY DRILL',gate:'STAGE GATE TEST',
+    flow:'FLOW TYPING',problem:'PROBLEM KEY DRILL',
     timed1:'1-MINUTE TEST',timed3:'3-MINUTE TEST',custom:'CUSTOM TEXT',
     slowbigram:'SLOW BIGRAM DRILL',precision:'PRECISION DRILL',wordchunk:'WORD FLOW',
-    lefthand:'LEFT HAND ONLY',righthand:'RIGHT HAND ONLY'}[m]||m.toUpperCase();
+    lefthand:'LEFT HAND ONLY',righthand:'RIGHT HAND ONLY',adaptive:'ADAPTIVE COACH',
+    samefinger:'SAME-FINGER REPAIR',numbers:'NUMBERS & SYMBOLS',punctuation:'PUNCTUATION FLOW'}[m]||m.toUpperCase();
 }
 
 function renderExText(justPressedCh){
-  const disp = document.getElementById('ex-text-display');
+  const disp = $('ex-text-display');
   disp.style.display = 'block';
 
   if(ex.mode === 'precision'){
@@ -1242,7 +1844,7 @@ function renderExText(justPressedCh){
 }
 
 function highlightNextKey(justPressedCh){
-  const vk = document.getElementById('visual-keyboard');
+  const vk = $('visual-keyboard');
   if(!vk || vk.style.display === 'none') return;
 
   vk.querySelectorAll('.next-key,.lookahead').forEach(k=>{
@@ -1280,7 +1882,7 @@ function highlightNextKey(justPressedCh){
 
 function onKeyDown(e){
   if(!ex.active) return;
-  const msg = document.getElementById('ex-message');
+  const msg = $('ex-message');
   if(e.getModifierState && e.getModifierState('CapsLock')){
     msg.textContent = 'CAPS LOCK IS ON — turn it off!';
   } else if(msg.textContent === 'CAPS LOCK IS ON — turn it off!'){
@@ -1288,7 +1890,7 @@ function onKeyDown(e){
   }
   if(e.key === 'Tab'){
     e.preventDefault();
-    const vk = document.getElementById('visual-keyboard');
+    const vk = $('visual-keyboard');
     vk.style.display = vk.style.display === 'none' ? 'block' : 'none';
     return;
   }
@@ -1315,82 +1917,71 @@ function onKeyDown(e){
   handleNormalKey(e);
 }
 
+// Shared key helpers — used by handleNormalKey/Burst/Rhythm/Precision.
+function startTimerIfNeeded(e){
+  if(!ex.startTime && e.key.length === 1){ ex.startTime = Date.now(); startTimer(); }
+  return !!ex.startTime;
+}
+function applyBackspace(){
+  if(ex.pos > 0){ ex.pos--; ex.correctChars = Math.max(0, ex.correctChars - 1); }
+  ex.backspaces++;
+  ex.lastKeystrokeTime = null; ex.bigramBuffer = '';
+}
+function applyCorrectKey(expected, opts={}){
+  if(opts.click !== false) playClick(opts.freq, opts.dur);
+  ex.totalTypedChars++;
+  recordAccuracyEvent(expected, expected, true);
+  registerRecentOutcome(true);
+  recordKeystroke(expected);
+  ex.pos++; ex.correctChars++;
+}
+function applyIncorrectKey(expected, typed){
+  playError();
+  ex.totalTypedChars++;
+  recordAccuracyEvent(expected, typed, false);
+  registerRecentOutcome(false);
+  ex.errors++;
+  ex.errorKeys[expected] = (ex.errorKeys[expected]||0)+1;
+  ex.lastKeystrokeTime = null; ex.bigramBuffer = '';
+}
+
 function handleNormalKey(e){
   if(e.key.length !== 1 && e.key !== 'Backspace') return;
   e.preventDefault();
+  if(!startTimerIfNeeded(e)) return;
 
-  if(!ex.startTime && e.key.length === 1){ ex.startTime = Date.now(); startTimer(); }
-  if(!ex.startTime) return;
-
-  if(e.key === 'Backspace'){
-    if(ex.pos > 0) ex.pos--;
-    renderExText();
-    return;
-  }
+  if(e.key === 'Backspace'){ applyBackspace(); updateStats(); renderExText(); return; }
 
   const expected = ex.text[ex.pos];
   if(expected === undefined) return;
 
   if(e.key === expected){
-    playClick();
-    const pressedCh = expected;
-    recordKeystroke(expected);
-    ex.pos++; ex.correctChars++;
+    applyCorrectKey(expected);
     ex.perfectStreak++;
     ex.sessionPerfectStreak++;
-    if(ex.sessionPerfectStreak > ex.longestSessionStreak)
-      ex.longestSessionStreak = ex.sessionPerfectStreak;
+    if(ex.sessionPerfectStreak > ex.longestSessionStreak) ex.longestSessionStreak = ex.sessionPerfectStreak;
     updateStats();
-    renderExText(pressedCh);
-
-    // Word training: check word completion
+    renderExText(expected);
     if(ex.mode === 'word' || ex.mode === 'flow'){
       if(ex.pos > 0 && (ex.pos >= ex.text.length || ex.text[ex.pos] === ' ')){
-        const word = ex.text.slice(ex.text.lastIndexOf(' ',ex.pos-1)+1, ex.pos);
-        handleWordComplete(word);
+        handleWordComplete(ex.text.slice(ex.text.lastIndexOf(' ',ex.pos-1)+1, ex.pos));
       }
     }
-
-    // Homerow: check consecutive perfect
-    if(ex.mode === 'homerow' && ex.pos >= ex.text.length){
-      if(ex.errors === 0) ex.consecutivePerfect++;
-      else ex.consecutivePerfect = 0;
-      if(ex.consecutivePerfect >= 3 && DATA.stage === 0){
-        endExercise(false, true);
-        return;
-      }
-      // Loop: reset for another round
-      ex.pos = 0; ex.errors = 0; ex.errorMap = {};
-      const c = ex.consecutivePerfect;
-      const m = c > 0
-        ? `✓ ${c}/3 perfect — keep going!`
-        : 'Error — restarting count';
-      document.getElementById('ex-message').textContent = m;
-      setTimeout(()=>{ if(document.getElementById('ex-message').textContent===m)
-        document.getElementById('ex-message').textContent=''; }, 1800);
-      renderExText();
-      return;
-    }
-
-    if(ex.pos >= ex.text.length){ endExercise(false); }
+    if(ex.pos >= ex.text.length) endExercise(false);
   } else {
-    playError();
-    ex.errors++;
-    ex.perfectStreak = 0;
-    ex.sessionPerfectStreak = 0;
+    applyIncorrectKey(expected, e.key);
+    ex.perfectStreak = 0; ex.sessionPerfectStreak = 0;
     ex.currentWordHadError = true;
     ex.errorMap[ex.pos] = (ex.errorMap[ex.pos]||0)+1;
-    ex.errorKeys[expected] = (ex.errorKeys[expected]||0)+1;
-    ex.lastKeystrokeTime = null; ex.bigramBuffer = '';
     if(ex.mode === 'homerow'){
-      updateStats();
-      renderExText();
+      updateStats(); renderExText();
     } else {
-      // Show error in place
-      const disp = document.getElementById('ex-text-display');
-      const spans = disp.querySelectorAll('span');
+      const spans = $('ex-text-display').querySelectorAll('span');
       if(spans[ex.pos]) spans[ex.pos].classList.add('err');
       updateStats();
+      if(DATA.settings.liveCoach !== false){
+        $('ex-message').textContent = getLiveDiagnosis() || `Missed ${expected.toUpperCase()} — slow that transition`;
+      }
     }
   }
 }
@@ -1405,6 +1996,7 @@ function handleWordComplete(word){
   if(hadError){
     ex.wordErrors++;
     DATA.problemPool[word] = (DATA.problemPool[word]||0)+1;
+    ex.wordErrorCounts[word] = (ex.wordErrorCounts[word]||0)+1;
   } else {
     if(DATA.problemPool[word] > 0){
       DATA.problemPool[word] = Math.max(0,(DATA.problemPool[word]||0)-1);
@@ -1417,12 +2009,13 @@ function handleWordComplete(word){
     ex.wordPerfectMap[wi] = !ex.currentWordHadError;
   }
   ex.currentWordHadError = false;
+  maybeInjectRepairBlock();
 }
 
 // ── BURST MODE ──
 function startBurstMode(){
-  document.getElementById('ex-text-display').style.display = 'none';
-  document.getElementById('ex-burst-word').style.display = 'flex';
+  $('ex-text-display').style.display = 'none';
+  $('ex-burst-word').style.display = 'flex';
   ex.burstIdx = 0; ex.burstWordErrors = 0;
   // startTime and countdown begin on first keystroke
   showBurstWord();
@@ -1433,13 +2026,13 @@ function startBurstCountdown(){
   if(ex.timerInterval) clearInterval(ex.timerInterval);
   ex.timerInterval = setInterval(()=>{
     t--;
-    document.getElementById('ex-timer').textContent = formatTime(t);
+    $('ex-timer').textContent = formatTime(t);
     if(t <= 0){ endExercise(false); }
   }, 1000);
 }
 
 function showBurstWord(){
-  document.getElementById('ex-burst-word').textContent = ex.burstWords[ex.burstIdx]||'';
+  $('ex-burst-word').textContent = ex.burstWords[ex.burstIdx]||'';
   ex.burstWordErrors = 0;
   ex.pos = 0;
   ex.text = ex.burstWords[ex.burstIdx]||'';
@@ -1452,33 +2045,26 @@ function handleBurstKey(e){
   if(!ex.startTime && e.key.length === 1){ ex.startTime = Date.now(); startTimer(); startBurstCountdown(); }
   if(!ex.startTime) return;
   if(e.key === 'Backspace'){
-    if(ex.pos > 0) ex.pos--;
+    applyBackspace();
     ex.burstWordErrors = Math.max(0, ex.burstWordErrors - 1);
-    ex.lastKeystrokeTime = null;
-    ex.bigramBuffer = '';
-    return;
+    updateStats(); return;
   }
   const expected = ex.text[ex.pos];
   if(!expected) return;
   if(e.key === expected){
-    playClick(1400, 0.02);
-    recordKeystroke(expected);
-    ex.pos++; ex.correctChars++;
+    applyCorrectKey(expected, {freq:1400, dur:0.02});
     if(ex.pos >= ex.text.length){
       ex.burstIdx++;
       if(ex.burstIdx >= ex.burstWords.length){ endExercise(false); return; }
       showBurstWord();
     }
   } else {
-    playError();
-    ex.errors++;
+    applyIncorrectKey(expected, e.key);
     ex.burstWordErrors++;
-    // Check accuracy
     const acc = (ex.correctChars / (ex.correctChars + ex.errors + 0.001)) * 100;
     if(ex.errors > 0 && ex.burstIdx > 2 && acc < BURST_MIN_ACCURACY){
-      document.getElementById('ex-message').textContent = 'Slow down — too many errors';
-      endExercise(false);
-      return;
+      $('ex-message').textContent = 'Slow down — too many errors';
+      endExercise(false); return;
     }
   }
   updateStats();
@@ -1491,61 +2077,47 @@ let rhythmHits = 0, rhythmTotal = 0, rhythmLastBeat = 0;
 function startRhythmMode(){
   rhythmBpm = DATA.settings.bpm || 80;
   rhythmHits = 0; rhythmTotal = 0;
-  document.getElementById('ex-rhythm-pulse').style.display = 'block';
+  $('ex-rhythm-pulse').style.display = 'block';
   const msPerBeat = 60000/rhythmBpm;
   if(ex.rhythmInterval) clearInterval(ex.rhythmInterval);
   ex.rhythmInterval = setInterval(()=>{
-    const pulse = document.getElementById('ex-rhythm-pulse');
+    const pulse = $('ex-rhythm-pulse');
     pulse.classList.add('beat');
     rhythmLastBeat = Date.now();
     playClick(800, 0.05);
     setTimeout(()=>pulse.classList.remove('beat'), 100);
   }, msPerBeat);
-  document.getElementById('ex-mode-label').textContent = `RHYTHM TYPING — ${rhythmBpm} BPM`;
+  $('ex-mode-label').textContent = `RHYTHM TYPING — ${rhythmBpm} BPM`;
   renderExText();
 }
 
 function handleRhythmKey(e){
   if(e.key.length !== 1 && e.key !== 'Backspace') return;
   e.preventDefault();
-  if(!ex.startTime && e.key.length === 1){ ex.startTime = Date.now(); startTimer(); }
-  if(!ex.startTime) return;
+  if(!startTimerIfNeeded(e)) return;
 
-  if(e.key === 'Backspace'){
-    if(ex.pos > 0) ex.pos--;
-    renderExText(); return;
-  }
+  if(e.key === 'Backspace'){ applyBackspace(); updateStats(); renderExText(); return; }
 
   const expected = ex.text[ex.pos];
   if(!expected) return;
 
   if(e.key === expected){
-    playClick();
-    recordKeystroke(expected);
-    rhythmTotal++; ex.correctChars++;
-    // Check if near beat
+    // Track rhythm hit before mutating pos
+    rhythmTotal++;
     const beatInterval = 60000/rhythmBpm;
     const timeSinceBeat = (Date.now() - rhythmLastBeat) % beatInterval;
     const nearBeat = timeSinceBeat < beatInterval*RHYTHM_BEAT_TOLERANCE || timeSinceBeat > beatInterval*(1-RHYTHM_BEAT_TOLERANCE);
-    if(nearBeat){
-      rhythmHits++;
-      document.getElementById('ex-message').textContent = '';
-    } else {
-      const beatFeedback = timeSinceBeat < beatInterval*0.5 ? 'late' : 'early';
-      document.getElementById('ex-message').textContent = beatFeedback + ' — find the beat';
-    }
+    if(nearBeat){ rhythmHits++; $('ex-message').textContent = ''; }
+    else $('ex-message').textContent = (timeSinceBeat < beatInterval*0.5 ? 'late' : 'early') + ' — find the beat';
 
-    ex.pos++;
+    applyCorrectKey(expected);
     ex.perfectStreak++;
     updateStats();
     renderExText();
-    if(ex.pos >= ex.text.length){ endExercise(false); }
+    if(ex.pos >= ex.text.length) endExercise(false);
   } else {
-    playError();
-    ex.errors++;
+    applyIncorrectKey(expected, e.key);
     ex.perfectStreak = 0;
-    ex.errorKeys[expected] = (ex.errorKeys[expected]||0)+1;
-    ex.lastKeystrokeTime = null; ex.bigramBuffer = '';
     updateStats();
   }
 }
@@ -1555,7 +2127,7 @@ function handlePrecisionKey(e){
   if(e.key.length !== 1){
     if(e.key === 'Backspace'){
       e.preventDefault();
-      document.getElementById('ex-message').textContent = 'No backspace — errors reset the word';
+      $('ex-message').textContent = 'No backspace — errors reset the word';
     }
     return;
   }
@@ -1567,40 +2139,25 @@ function handlePrecisionKey(e){
   const wIdx = ex.precWordIdx;
 
   if(e.key !== expected){
-    playError();
-    ex.errors++;
+    applyIncorrectKey(expected, e.key);
     ex.precWordHadError = true;
     ex.precWordErrors[wIdx] = (ex.precWordErrors[wIdx]||0) + 1;
-    // Record failed bigram
     if(ex.pos > 0){
       const failBg = ex.text[ex.pos-1] + ex.text[ex.pos];
-      if(!ex.precLastFailBigram[wIdx]) ex.precLastFailBigram[wIdx] = [];
-      ex.precLastFailBigram[wIdx].push(failBg);
+      (ex.precLastFailBigram[wIdx] = ex.precLastFailBigram[wIdx] || []).push(failBg);
     }
-    // Reset to word start — also reset the word timer
     ex.pos = ex.precWordStart;
     ex.precWordStartTime = null;
     ex.precWordAttempts[wIdx] = (ex.precWordAttempts[wIdx]||0) + 1;
-    ex.lastKeystrokeTime = null; ex.bigramBuffer = '';
     if(ex.precWordAttempts[wIdx] >= 2){
-      document.getElementById('ex-message').textContent = 'Slow down. Focus, not speed.';
-    }
-    precisionShowInsight(wIdx);
-    if(ex.precWordAttempts[wIdx] >= 2){
+      $('ex-message').textContent = 'Slow down. Focus, not speed.';
       precisionShowBigramBreakdown(wIdx);
     }
+    precisionShowInsight(wIdx);
   } else {
-    // Start word timer on first correct char after any reset
-    if(ex.pos === ex.precWordStart && !ex.precWordStartTime){
-      ex.precWordStartTime = Date.now();
-    }
-    playClick();
-    recordKeystroke(expected);
-    ex.pos++; ex.correctChars++;
-    if(expected === ' ' || ex.pos >= ex.text.length){
-      precisionWordComplete();
-      return;
-    }
+    if(ex.pos === ex.precWordStart && !ex.precWordStartTime) ex.precWordStartTime = Date.now();
+    applyCorrectKey(expected);
+    if(expected === ' ' || ex.pos >= ex.text.length){ precisionWordComplete(); return; }
   }
   renderExText(e.key);
   updateStats();
@@ -1631,8 +2188,8 @@ function precisionWordComplete(){
   ex.precWordIdx++;
   ex.precWordHadError = false;
   ex.precWordStart = ex.pos;
-  document.getElementById('precision-insight').style.display = 'none';
-  document.getElementById('ex-message').textContent = '';
+  $('precision-insight').style.display = 'none';
+  $('ex-message').textContent = '';
   updatePrecisionGoalBar();
   renderExText();
   updateStats();
@@ -1668,9 +2225,9 @@ function precisionHandleEnd(){
 // WORD FLOW (wordchunk) MODE
 // ═══════════════════════════════════════════════
 function startWordChunkMode(){
-  document.getElementById('ex-text-display').style.display = 'none';
-  document.getElementById('ex-burst-word').style.display = 'none';
-  document.getElementById('wc-display').style.display = 'flex';
+  $('ex-text-display').style.display = 'none';
+  $('ex-burst-word').style.display = 'none';
+  $('wc-display').style.display = 'flex';
   ex.wcWords = ex.text.split(' ');
   ex.wcWordIdx = 0;
   ex.wcWordAttempt = 1;
@@ -1687,7 +2244,7 @@ function startWordChunkMode(){
 function renderWordChunkDisplay(){
   const word = ex.wcWords[ex.wcWordIdx] || '';
   const pos = ex.wcWordPos;
-  const charsEl = document.getElementById('wc-word-chars');
+  const charsEl = $('wc-word-chars');
   if(!charsEl) return;
   let html = '';
   for(let i=0;i<word.length;i++){
@@ -1705,18 +2262,18 @@ function renderWordChunkDisplay(){
 
   // Update progress bar
   const pct = Math.min(100, Math.round((ex.wcWordIdx / ex.wcWords.length) * 100));
-  document.getElementById('ex-progress-fill').style.width = pct+'%';
+  $('ex-progress-fill').style.width = pct+'%';
 
   // Update mode label
-  document.getElementById('ex-mode-label').textContent =
+  $('ex-mode-label').textContent =
     `WORD FLOW · Word ${ex.wcWordIdx+1} / ${ex.wcWords.length}`;
 }
 
 function updateWordChunkStats(){
-  const streakEl = document.getElementById('wc-streak');
-  const avgEl = document.getElementById('wc-avg-ms');
-  const pctEl = document.getElementById('wc-perfect-pct');
-  const bestEl = document.getElementById('wc-best-wpm');
+  const streakEl = $('wc-streak');
+  const avgEl = $('wc-avg-ms');
+  const pctEl = $('wc-perfect-pct');
+  const bestEl = $('wc-best-wpm');
   if(streakEl) streakEl.textContent = ex.wcStreak;
   if(ex.wcWordResults.length > 0){
     const avgMs = Math.round(ex.wcWordResults.reduce((s,r)=>s+r.execMs,0)/ex.wcWordResults.length);
@@ -1726,7 +2283,7 @@ function updateWordChunkStats(){
     const best = Math.max(...ex.wcWordResults.map(r=>r.wpm));
     if(bestEl) bestEl.textContent = best+' WPM';
     // Show perfect% in header stat
-    document.getElementById('stat-wpm').textContent = pct+'%';
+    $('stat-wpm').textContent = pct+'%';
     const lbl = document.querySelector('#stat-wpm + .lbl');
     if(lbl) lbl.textContent = 'PERFECT';
   } else {
@@ -1741,7 +2298,7 @@ function handleWordChunkKey(e){
   if(e.key.length !== 1) {
     if(e.key === 'Backspace'){
       e.preventDefault();
-      const msg = document.getElementById('ex-message');
+      const msg = $('ex-message');
       if(msg){ msg.textContent = 'No backspace — commit to each word'; setTimeout(()=>{ if(msg.textContent.includes('backspace')) msg.textContent=''; },1200); }
     }
     return;
@@ -1780,7 +2337,7 @@ function handleWordChunkKey(e){
     ex.wcWordPos = 0;
     ex.wcWordStartTime = null;
     ex.wcStreak = 0;
-    document.getElementById('stat-err').textContent = ex.errors;
+    $('stat-err').textContent = ex.errors;
     wcFlash('red', 'Reset — no errors allowed');
     renderWordChunkDisplay();
   }
@@ -1824,7 +2381,7 @@ function wcWordComplete(){
 }
 
 function wcFlash(color, text){
-  const el = document.getElementById('wc-flash-overlay');
+  const el = $('wc-flash-overlay');
   if(!el) return;
   el.className = 'wc-flash-overlay';
   el.textContent = text;
@@ -1882,8 +2439,8 @@ function precisionShowInsight(wIdx){
 
   bodyHtml += `<div class="pi-counter">Attempt ${attempts + 1} on "<b>${word}</b>"</div>`;
 
-  document.getElementById('pi-body').innerHTML = bodyHtml;
-  document.getElementById('precision-insight').style.display = 'block';
+  $('pi-body').innerHTML = bodyHtml;
+  $('precision-insight').style.display = 'block';
 }
 
 function precisionShowBigramBreakdown(wIdx){
@@ -1898,7 +2455,7 @@ function precisionShowBigramBreakdown(wIdx){
     </div>`;
   }
   bdHtml += '</div>';
-  document.getElementById('pi-body').innerHTML += bdHtml;
+  $('pi-body').innerHTML += bdHtml;
 }
 
 function updatePrecisionGoalBar(){
@@ -1909,18 +2466,18 @@ function updatePrecisionGoalBar(){
   const wpmVals = Object.values(ex.precWordWPM).filter(v=>v>0);
   const avgWPM  = wpmVals.length ? Math.round(wpmVals.reduce((a,b)=>a+b,0)/wpmVals.length) : 0;
   const wpmPart = avgWPM > 0 ? ` · ${avgWPM} wpm avg` : '';
-  document.getElementById('pg-label-pct').textContent = perfect + ' / ' + total + ' — ' + pct + '%' + wpmPart;
-  const fill = document.getElementById('pg-fill');
+  $('pg-label-pct').textContent = perfect + ' / ' + total + ' — ' + pct + '%' + wpmPart;
+  const fill = $('pg-fill');
   fill.style.width = pct + '%';
   fill.style.background = pct >= 90 ? 'var(--green)' : pct >= 75 ? 'var(--yellow)' : 'var(--red)';
 }
 
 function startTimer(){
-  if(ex.mode === 'burst' || ex.gateMode || ex.mode === 'timed1' || ex.mode === 'timed3') return; // these manage own timer
+  if(ex.mode === 'burst' || ex.mode === 'timed1' || ex.mode === 'timed3') return; // these manage own timer
   let elapsed = 0;
   ex.timerInterval = setInterval(()=>{
     elapsed++;
-    document.getElementById('ex-timer').textContent = formatTime(elapsed);
+    $('ex-timer').textContent = formatTime(elapsed);
   }, 1000);
 }
 
@@ -1948,48 +2505,96 @@ function computeTrend(mode){
 }
 
 function recommendNextMode(){
+  // First session of all time: ease the player in with Word Training.
+  if(!DATA.sessions || DATA.sessions.length === 0) return 'word';
+  if(DATA.settings.adaptiveCoach !== false){
+    const profile = getAdaptiveProfile();
+    if(profile.weakTrigrams.length || profile.weakKeys.length) return 'adaptive';
+  }
   const bls = DATA.bigramLatencies||{};
   const slowBg = Object.entries(bls).filter(([,v])=>v.count>=3 && (v.sum/v.count)>200);
-  if(slowBg.length > 0 && DATA.stage >= 2) return 'slowbigram';
+  if(slowBg.length > 0) return 'slowbigram';
+  const sameFingerIssue = Object.entries(DATA.bigramStats||{})
+    .filter(([bg,v])=>bg.length===2 && v.attempts>=4 && KEY_FINGERS[bg[0]] === KEY_FINGERS[bg[1]] && (v.hits/v.attempts) < 0.9);
+  if(sameFingerIssue.length > 0) return 'samefinger';
   const topErrVal = Math.max(0,...Object.values(DATA.keyErrorCounts||{}));
   if(topErrVal > 5) return 'problem';
   const lastS = DATA.sessions[DATA.sessions.length-1];
-  if(lastS && lastS.consistencyScore != null && lastS.consistencyScore < 60 && DATA.stage >= 2) return 'rhythm';
-  if(lastS && lastS.wpm < 50 && lastS.accuracy > 94 && DATA.stage >= 1) return 'burst';
+  if(lastS && lastS.consistencyScore != null && lastS.consistencyScore < 60) return 'rhythm';
+  if(lastS && lastS.wpm < 50 && lastS.accuracy > 94) return 'burst';
   return 'word';
 }
 
 function updateStats(){
   if(!ex.startTime) return;
-  const elapsed = (Date.now()-ex.startTime)/60000;
-  const wpm = elapsed > 0.01 ? Math.round((ex.correctChars/5)/elapsed) : 0;
+  const elapsedSec = (Date.now()-ex.startTime)/1000;
   const total = ex.correctChars + ex.errors;
   const acc = total > 0 ? Math.round((ex.correctChars/total)*1000)/10 : 100;
 
+  // Below ~3 seconds the WPM is meaningless (one fast burst inflates it 5×).
+  // Show a placeholder until the sample is large enough to be honest.
+  const metrics = getSessionMetricSnapshot();
+  const wpmReady = elapsedSec >= 3 && ex.correctChars >= 5;
+  const wpmDisplay = wpmReady ? metrics.netWpm : '—';
+
   if(ex.mode === 'precision'){
     const pct = ex.precWordIdx > 0 ? Math.round(ex.precPerfectCount/ex.precWordIdx*100) : 0;
-    document.getElementById('stat-wpm').textContent = pct+'%';
+    $('stat-wpm').textContent = pct+'%';
     const lbl = document.querySelector('#stat-wpm + .lbl');
     if(lbl) lbl.textContent = 'PERFECT';
   } else if(ex.mode === 'wordchunk'){
     // WPM display handled by updateWordChunkStats
-    document.getElementById('stat-acc').textContent = acc.toFixed(1)+'%';
-    document.getElementById('stat-err').textContent = ex.errors;
+    $('stat-acc').textContent = acc.toFixed(1)+'%';
+    $('stat-err').textContent = ex.errors;
     return;
   } else {
-    document.getElementById('stat-wpm').textContent = wpm;
+    $('stat-wpm').textContent = wpmDisplay;
     const lbl = document.querySelector('#stat-wpm + .lbl');
     if(lbl) lbl.textContent = 'WPM';
   }
 
-  document.getElementById('stat-acc').textContent = acc.toFixed(1)+'%';
-  document.getElementById('stat-err').textContent = ex.errors;
-  // progress
-  const pct = Math.min(100, Math.round((ex.pos/ex.text.length)*100));
-  document.getElementById('ex-progress-fill').style.width = pct+'%';
+  $('stat-acc').textContent = acc.toFixed(1)+'%';
+  $('stat-err').textContent = ex.errors;
+  const pct = ex.text.length > 0 ? Math.min(100, Math.round((ex.pos/ex.text.length)*100)) : 0;
+  $('ex-progress-fill').style.width = pct+'%';
 }
 
-function endExercise(aborted, homerowPass){
+// Merge {hits, attempts} stats from src into dst.
+function mergeHitStats(dst, src){
+  for(const [k,v] of Object.entries(src)){
+    if(!dst[k]) dst[k] = {hits:0, attempts:0};
+    dst[k].hits += v.hits;
+    dst[k].attempts += v.attempts;
+  }
+}
+// Mode-specific extras to attach to the saved session.
+const MODE_SESSION_EXTRAS = {
+  burst: () => ({burstWordsCompleted: ex.burstIdx}),
+  rhythm: () => ({rhythmBeatAccuracy: rhythmTotal > 0 ? Math.round((rhythmHits/rhythmTotal)*100) : null}),
+  precision: () => ({
+    precPerfectPct: Math.round(ex.precPerfectCount/Math.max(1,ex.precWordIdx)*100),
+    precPerfectCount: ex.precPerfectCount,
+    precTotalWords: ex.precWordIdx,
+    precAttempts: {...ex.precWordAttempts},
+    precWordPerfect: {...ex.precWordPerfect},
+    precWordList: [...ex.precWordList],
+    precWordWPM: {...ex.precWordWPM},
+    precWordErrors: {...ex.precWordErrors},
+    precRetryOf: {...ex.precRetryOf},
+  }),
+  wordchunk: () => {
+    const r = ex.wcWordResults;
+    return {
+      wcPerfectRate: ex.wcPerfectCount/Math.max(1,r.length),
+      wcAvgExecMs: r.length ? Math.round(r.reduce((s,x)=>s+x.execMs,0)/r.length) : null,
+      wcBestWordWPM: r.length ? Math.max(...r.map(x=>x.wpm)) : null,
+      wcBestStreak: ex.wcBestStreak,
+      wcWordResults: [...r],
+    };
+  },
+};
+
+function endExercise(aborted){
   if(!ex.active) return;
   ex.active = false;
   document.removeEventListener('keydown', onKeyDown);
@@ -1998,92 +2603,71 @@ function endExercise(aborted, homerowPass){
 
   if(aborted){ showScreen('modes'); return; }
 
-  // Calc final stats
-  const elapsed = ex.startTime ? (Date.now()-ex.startTime)/1000 : 1;
-  const chars = ex.correctChars;
-  const wpm = Math.round((chars/5)/(elapsed/60));
-  const total = chars + ex.errors;
-  const acc = total > 0 ? Math.round((chars/total)*1000)/10 : 100;
+  const elapsedSec = ex.startTime ? Math.max(1, (Date.now()-ex.startTime)/1000) : 1;
+  const metrics = getSessionMetricSnapshot();
+  const wpm = metrics.netWpm;
+  const total = ex.correctChars + ex.errors;
+  const acc = total > 0 ? Math.round((ex.correctChars/total)*1000)/10 : 100;
 
-  // Homerow foundation pass
-  if(homerowPass || (ex.mode === 'homerow' && DATA.stage === 0 && ex.consecutivePerfect >= 3)){
-    DATA.stage = 1;
-    DATA.homeRowPerfect = 0;
-    saveData();
-    showSummary(wpm, acc, elapsed, ex.errors, true);
-    return;
-  }
-
-  // Compute session bigram stats
   const _bgAvgs = Object.entries(ex.sessionBigramLatencies)
     .filter(([,arr])=>arr.length>=3)
     .map(([bg,arr])=>[bg,Math.round(arr.reduce((a,b)=>a+b,0)/arr.length)])
     .sort((a,b)=>b[1]-a[1]);
 
-  // Save session
   const session = {
-    date: new Date().toISOString().slice(0,10),
+    date: getDateKey(),
     mode: ex.mode,
     wpm, accuracy: acc, errors: ex.errors,
-    duration: Math.round(elapsed),
+    rawWpm: metrics.rawWpm, netWpm: metrics.netWpm,
+    errorRate: Math.round(metrics.errorRate*10)/10,
+    peakBurstWpm: getPeakBurstWpm(ex.timeline),
+    duration: Math.round(elapsedSec),
     errorKeys: {...ex.errorKeys},
+    typedErrorKeys: {...ex.typedErrorKeys},
+    wordErrors: {...ex.wordErrorCounts},
     consistencyScore: computeConsistencyScore(ex.ikiList),
     slowBigrams: _bgAvgs.slice(0,3),
+    keyStats: {...ex.sessionKeyStats},
+    bigramStats: {...ex.sessionBigramStats},
+    trigramStats: {...ex.sessionTrigramStats},
+    timeline: ex.timeline.map(b=>b||{correct:0,errors:0,total:0}),
+    config: {...ex.cfg},
+    dailyStep: ex.dailyMode ? dailySession.index : null,
+    dailyLabel: ex.dailyMode ? dailySession.label : null,
+    injectedRepairWords: [...ex.injectedRepairWords],
     timeOfDay: new Date().getHours(),
-    burstWordsCompleted: ex.mode === 'burst' ? ex.burstIdx : null,
-    rhythmBeatAccuracy: ex.mode === 'rhythm'
-      ? (rhythmTotal > 0 ? Math.round((rhythmHits/rhythmTotal)*100) : null)
-      : null,
-    precPerfectPct:   ex.mode==='precision' ? Math.round(ex.precPerfectCount/Math.max(1,ex.precWordIdx)*100) : null,
-    precPerfectCount: ex.mode==='precision' ? ex.precPerfectCount : null,
-    precTotalWords:   ex.mode==='precision' ? ex.precWordIdx : null,
-    precAttempts:     ex.mode==='precision' ? {...ex.precWordAttempts} : null,
-    precWordPerfect:  ex.mode==='precision' ? {...ex.precWordPerfect} : null,
-    precWordList:     ex.mode==='precision' ? [...ex.precWordList] : null,
-    precWordWPM:      ex.mode==='precision' ? {...ex.precWordWPM} : null,
-    precWordErrors:   ex.mode==='precision' ? {...ex.precWordErrors} : null,
-    precRetryOf:      ex.mode==='precision' ? {...ex.precRetryOf} : null,
-    wcPerfectRate:    ex.mode==='wordchunk' ? ex.wcPerfectCount/Math.max(1,ex.wcWordResults.length) : null,
-    wcAvgExecMs:      ex.mode==='wordchunk' && ex.wcWordResults.length > 0 ? Math.round(ex.wcWordResults.reduce((s,r)=>s+r.execMs,0)/ex.wcWordResults.length) : null,
-    wcBestWordWPM:    ex.mode==='wordchunk' && ex.wcWordResults.length > 0 ? Math.max(...ex.wcWordResults.map(r=>r.wpm)) : null,
-    wcBestStreak:     ex.mode==='wordchunk' ? ex.wcBestStreak : null,
-    wcWordResults:    ex.mode==='wordchunk' ? [...ex.wcWordResults] : null,
+    ...(MODE_SESSION_EXTRAS[ex.mode]?.() || {}),
   };
   DATA.sessions.push(session);
   if(DATA.sessions.length > 200) DATA.sessions = DATA.sessions.slice(-200);
 
-  // Update key error counts
-  for(const [k,v] of Object.entries(ex.errorKeys)){
-    DATA.keyErrorCounts[k] = (DATA.keyErrorCounts[k]||0)+v;
-  }
-
-  // Rollup bigram latencies
+  // Rollups: keyErrors, hit-stats and finger maps.
+  for(const [k,v] of Object.entries(ex.errorKeys)) DATA.keyErrorCounts[k] = (DATA.keyErrorCounts[k]||0)+v;
+  mergeHitStats(DATA.keyStats, ex.sessionKeyStats);
+  mergeHitStats(DATA.bigramStats, ex.sessionBigramStats);
+  mergeHitStats(DATA.trigramStats, ex.sessionTrigramStats);
   for(const [bg,arr] of Object.entries(ex.sessionBigramLatencies)){
     if(!DATA.bigramLatencies[bg]) DATA.bigramLatencies[bg]={sum:0,count:0};
-    DATA.bigramLatencies[bg].sum += arr.reduce((a,b)=>a+b,0);
-    DATA.bigramLatencies[bg].count += arr.length;
-  }
-  // Rollup finger errors and latencies
-  for(const [k,v] of Object.entries(ex.errorKeys)){
-    const f=KEY_FINGERS[k.toLowerCase()]||'thumb';
-    if(f!=='thumb') DATA.fingerErrors[f]=(DATA.fingerErrors[f]||0)+v;
-  }
-  for(const [bg,arr] of Object.entries(ex.sessionBigramLatencies)){
     const sum = arr.reduce((a,b)=>a+b,0);
-    const count = arr.length;
+    DATA.bigramLatencies[bg].sum += sum;
+    DATA.bigramLatencies[bg].count += arr.length;
     for(const ch of [bg[0], bg[1]]){
       const f = KEY_FINGERS[ch?.toLowerCase()] || 'thumb';
       if(f !== 'thumb'){
         if(!DATA.fingerLatencies[f]) DATA.fingerLatencies[f] = {sum:0,count:0};
         DATA.fingerLatencies[f].sum += sum;
-        DATA.fingerLatencies[f].count += count;
+        DATA.fingerLatencies[f].count += arr.length;
       }
     }
   }
+  for(const [k,v] of Object.entries(ex.errorKeys)){
+    const f = KEY_FINGERS[k.toLowerCase()] || 'thumb';
+    if(f !== 'thumb') DATA.fingerErrors[f] = (DATA.fingerErrors[f]||0) + v;
+  }
 
   // Update streak
-  const today = new Date().toISOString().slice(0,10);
-  const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const today = getDateKey();
+  const yesterday = getDateKey(addDays(new Date(), -1));
   if(DATA.records.lastSessionDate === yesterday){
     DATA.records.currentSessionStreak = (DATA.records.currentSessionStreak||0)+1;
   } else if(DATA.records.lastSessionDate !== today){
@@ -2110,7 +2694,7 @@ function endExercise(aborted, homerowPass){
 
   // Check personal bests
   let newBests = [];
-  const SPEED_MODES = ['word','flow','timed1','timed3','gate'];
+  const SPEED_MODES = ['word','flow','timed1','timed3','adaptive'];
   if(SPEED_MODES.includes(ex.mode) && wpm > (DATA.records.bestWPM||0)){ DATA.records.bestWPM=wpm; newBests.push('WPM'); }
   if(ex.mode === 'burst' && wpm > (DATA.records.bestBurstWPM||0)){ DATA.records.bestBurstWPM=wpm; newBests.push('Burst WPM'); }
   if(ex.mode === 'rhythm' && wpm > (DATA.records.bestRhythmWPM||0)){ DATA.records.bestRhythmWPM=wpm; newBests.push('Rhythm WPM'); }
@@ -2130,47 +2714,36 @@ function endExercise(aborted, homerowPass){
     if(DATA.sessionDates.length > 365) DATA.sessionDates = DATA.sessionDates.slice(-365);
   }
 
-  // Gate test check
-  if(ex.gateMode && ex.gateReq){
-    const passed = wpm >= ex.gateReq.wpm && acc >= ex.gateReq.acc;
-    if(passed){
-      DATA.stage = Math.min(6, DATA.stage+1);
-      saveData();
-      showSummary(wpm, acc, elapsed, ex.errors, false, newBests, true, session);
-      return;
-    }
-  }
-
-  // Check for automatic gate trigger (trailing 3-session average)
-  checkAutoGate();
+  // Stage advances automatically as rolling performance improves. No tests, no overlays.
+  const stagedUp = updateStageFromPerformance();
 
   saveData();
-  showSummary(wpm, acc, elapsed, ex.errors, false, newBests, false, session);
+  showSummary(wpm, acc, elapsedSec, ex.errors, newBests, session, stagedUp);
 }
 
-function checkAutoGate(){
-  if(DATA.stage >= 6) return;
-  const req = STAGE_REQS[DATA.stage];
-  if(!req || req.wpm === 0) return;
-  const SPEED_MODES = ['word','flow','timed1','timed3'];
-  const recent = DATA.sessions.filter(s=>SPEED_MODES.includes(s.mode)).slice(-3);
-  if(recent.length < 3) return;
-  const avgWpm = recent.reduce((s,r)=>s+r.wpm,0)/3;
-  const avgAcc = recent.reduce((s,r)=>s+r.accuracy,0)/3;
-  if(avgWpm >= req.wpm && avgAcc >= req.acc){
-    // Suggest gate test
-    document.getElementById('gate-title').textContent = `Stage ${DATA.stage+1} Gate Test Available!`;
-    document.getElementById('gate-desc').textContent =
-      `Your last 3 sessions averaged ${avgWpm.toFixed(0)} WPM / ${avgAcc.toFixed(1)}% accuracy. `+
-      `Take the 60-second Stage Gate test to advance to Stage ${DATA.stage+1}?`;
-    ex.pendingGateReq = STAGE_REQS[DATA.stage];
-    // Show after summary
-    ex.pendingGate = true;
+// Advance the stage indicator based on rolling performance. No gate, no overlay.
+// Returns the new stage if it changed, otherwise null.
+function updateStageFromPerformance(){
+  const prev = DATA.stage;
+  // Stage 0 → 1 simply by showing up: any completed session counts.
+  if(prev === 0 && DATA.sessions.length >= 1){
+    DATA.stage = 1;
+    return DATA.stage;
   }
+  if(prev >= STAGE_NAMES.length - 1) return null;
+  const req = getStageGateReq(prev);
+  if(!req) return null;
+  const rolling = getRollingSpeedAverage();
+  if(!rolling || rolling.count < Math.min(3, STAGE_ROLLING_WINDOW)) return null;
+  if(rolling.wpm >= req.wpm && rolling.acc >= req.acc){
+    DATA.stage = prev + 1;
+    return DATA.stage;
+  }
+  return null;
 }
 
 function setDelta(elId, val, unit, decimals){
-  const el = document.getElementById(elId);
+  const el = $(elId);
   if(!el) return;
   if(val === null || val === undefined){ el.textContent=''; return; }
   const d = decimals !== undefined ? val.toFixed(decimals) : Math.round(Math.abs(val));
@@ -2181,13 +2754,16 @@ function setDelta(elId, val, unit, decimals){
 }
 
 function buildSummaryDetailCard(session, wpm, acc){
-  const card = document.getElementById('sum-detail-card');
-  const body = document.getElementById('sum-detail-body');
+  const card = $('sum-detail-card');
+  const body = $('sum-detail-body');
   if(!card || !body) return;
   let html = '';
   const mode = session.mode;
   if(mode === 'burst' && session.burstWordsCompleted != null){
     html += `<div style="font-size:.85rem;color:var(--text2)">Words completed: <b style="color:var(--accent)">${session.burstWordsCompleted}</b></div>`;
+  }
+  if(session.dailyStep != null){
+    html += `<div style="font-size:.85rem;color:var(--text2)">Daily step: <b style="color:var(--accent)">${session.dailyStep+1}</b> of <b style="color:var(--accent)">${dailySession.plan.length || (DATA.dailyHistory.lastPlanModes?.length||0)}</b></div>`;
   }
   if(mode === 'rhythm' && session.rhythmBeatAccuracy != null){
     const bc = session.rhythmBeatAccuracy >= 70 ? 'var(--green)' : session.rhythmBeatAccuracy >= 50 ? 'var(--yellow)' : 'var(--red)';
@@ -2199,10 +2775,20 @@ function buildSummaryDetailCard(session, wpm, acc){
       html += `<div style="font-size:.85rem;color:var(--text2)">Mode best: <b style="color:var(--accent)">${mr.bestWPM} WPM</b></div>`;
     }
   }
+  if(session.config){
+    html += `<div style="font-size:.85rem;color:var(--text2);margin-top:6px">Config: <b style="color:var(--text)">${session.config.wordCount||'—'} words</b> · <b style="color:var(--text)">${session.config.duration||'—'}s</b> · ${session.config.includePunctuation?'punct ':''}${session.config.includeNumbers?'numbers ':''}${session.config.includeSymbols?'symbols':''}</div>`;
+  }
+  if(session.injectedRepairWords?.length){
+    html += `<div style="font-size:.82rem;color:var(--text2);margin-top:6px">Live repair inserted: <b style="color:var(--text)">${[...new Set(session.injectedRepairWords)].slice(0,6).join(', ')}</b></div>`;
+  }
+  const diagnosis = getSessionDiagnosis(session);
+  if(diagnosis.length){
+    html += `<div class="sum-mini-lbl" style="margin:12px 0 8px">DIAGNOSIS</div><div class="sum-list">${diagnosis.map(line=>`<span class="sum-pill warn">${line}</span>`).join('')}</div>`;
+  }
   body.innerHTML = html;
 
   // Slow bigrams
-  const sbEl = document.getElementById('sum-slow-bigrams');
+  const sbEl = $('sum-slow-bigrams');
   if(sbEl){
     if(session.slowBigrams && session.slowBigrams.length){
       sbEl.innerHTML = 'Slowest bigrams: '+session.slowBigrams.map(([bg,ms])=>
@@ -2211,7 +2797,7 @@ function buildSummaryDetailCard(session, wpm, acc){
   }
 
   // Trend
-  const trendEl = document.getElementById('sum-trend');
+  const trendEl = $('sum-trend');
   if(trendEl){
     const trend = computeTrend(mode);
     if(trend === 'improving') trendEl.innerHTML = '<span class="improving">↑ Trend: improving over last 10 sessions</span>';
@@ -2225,47 +2811,131 @@ function buildSummaryDetailCard(session, wpm, acc){
 }
 
 function buildSummaryWeaknessesCard(session){
-  const card = document.getElementById('sum-weaknesses-card');
-  const body = document.getElementById('sum-weakness-body');
+  const card = $('sum-weaknesses-card');
+  const body = $('sum-weakness-body');
   if(!card || !body) return;
   const topErrors = Object.entries(session.errorKeys||{}).sort((a,b)=>b[1]-a[1]).slice(0,8);
-  if(topErrors.length === 0){ card.classList.remove('visible'); return; }
+  const topWords = Object.entries(session.wordErrors||{}).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if(topErrors.length === 0 && topWords.length === 0){ card.classList.remove('visible'); return; }
   const chips = topErrors.map(([k,v])=>
     `<div class="sum-error-chip" title="${v} errors">${k.toUpperCase()} ×${v}</div>`).join('');
-  body.innerHTML = `<div class="sum-error-chips">${chips}</div>`;
+  const words = topWords.map(([w,v])=>`<div class="sum-pill bad">${w} ×${v}</div>`).join('');
+  body.innerHTML = `<div class="sum-error-chips">${chips}</div>${words?`<div class="sum-mini-lbl" style="margin:12px 0 8px">WORDS</div><div class="sum-list">${words}</div>`:''}`;
   card.classList.add('visible');
 }
 
-function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gatePass=false, session={}){
+function buildAccuracyPills(entries, kind){
+  if(!entries.length) return '<span class="sum-section-note">Not enough data yet.</span>';
+  return entries.map(([label, stat])=>{
+    const acc = stat.attempts ? Math.round((stat.hits/stat.attempts)*100) : 0;
+    const cls = acc >= 96 ? 'good' : acc >= 90 ? 'warn' : 'bad';
+    return `<span class="sum-pill ${cls}" title="${stat.hits}/${stat.attempts} ${kind} hits">${label.toUpperCase()} ${acc}%</span>`;
+  }).join('');
+}
+function populateSummaryBreakdown(session){
+  const keyStats = Object.entries(session.keyStats||{}).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts)).slice(0,8);
+  const bigramStats = Object.entries(session.bigramStats||{}).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts)).slice(0,8);
+  const trigramStats = Object.entries(session.trigramStats||{}).filter(([,v])=>v.attempts>=2).sort((a,b)=>(a[1].hits/a[1].attempts)-(b[1].hits/b[1].attempts)).slice(0,6);
+  $('sum-key-accuracy').innerHTML = buildAccuracyPills(keyStats,'key');
+  $('sum-bigram-accuracy').innerHTML = buildAccuracyPills(bigramStats,'bigram');
+  $('sum-trigram-accuracy').innerHTML = buildAccuracyPills(trigramStats,'trigram');
+  const note = getAdaptiveProfile();
+  const message = note.weakKeys[0]
+    ? `Coach focus: ${note.weakKeys[0].key.toUpperCase()} key, ${note.weakBigrams[0]?.bg?.toUpperCase()||'next bigram'} and ${note.weakTrigrams[0]?.tg?.toUpperCase()||'timing consistency'}.`
+    : 'Coach focus will get more specific after a few more sessions.';
+  $('sum-breakdown-note').textContent = message;
+}
+// ── Canvas drawing helpers — shared by all chart functions ──
+function chartInit(canvas, bg='#1a1a1a'){
+  if(!canvas) return null;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
+  return {ctx, W, H};
+}
+function chartEmpty(ctx, W, H, msg, subMsg){
+  ctx.fillStyle = '#555'; ctx.font = '13px monospace'; ctx.textAlign = 'center';
+  ctx.fillText(msg, W/2, subMsg ? H/2-10 : H/2);
+  if(subMsg){
+    ctx.fillStyle = '#444'; ctx.font = '11px monospace';
+    ctx.fillText(subMsg, W/2, H/2+14);
+  }
+}
+function chartGrid(ctx, pad, cW, cH, divs=4, color='#2a2a2a'){
+  ctx.strokeStyle = color; ctx.lineWidth = 1;
+  for(let i=0;i<=divs;i++){
+    const y = pad.t + (cH/divs)*i;
+    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+cW,y); ctx.stroke();
+  }
+}
+function chartLine(ctx, values, pad, cW, cH, normFn, opts={}){
+  ctx.strokeStyle = opts.color || '#4a9eff';
+  ctx.lineWidth = opts.width || 2;
+  if(opts.dash) ctx.setLineDash(opts.dash);
+  ctx.beginPath();
+  values.forEach((v,i)=>{
+    const x = pad.l + (i/(values.length-1))*cW;
+    const y = pad.t + cH - normFn(v)*cH;
+    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+  });
+  ctx.stroke();
+  if(opts.dash) ctx.setLineDash([]);
+}
+
+function drawSummaryTimeline(session){
+  const c = chartInit($('sum-timeline-chart'),
+    getComputedStyle(document.documentElement).getPropertyValue('--bg2') || '#111');
+  if(!c) return;
+  const {ctx, W, H} = c;
+  const timeline = (session.timeline||[]).filter(Boolean);
+  if(timeline.length < 2){ chartEmpty(ctx, W, H, 'Need a longer run to draw pace over time.'); return; }
+  const pad = {l:42,r:42,t:18,b:28};
+  const cW = W-pad.l-pad.r, cH = H-pad.t-pad.b;
+  const perSecWpm = timeline.map(b=>Math.round((b.correct/5)*60));
+  const perSecAcc = timeline.map(b=>b.total ? (b.correct/b.total)*100 : 100);
+  const maxWpm = Math.max(20, ...perSecWpm);
+  chartGrid(ctx, pad, cW, cH, 4, '#223248');
+  chartLine(ctx, perSecWpm, pad, cW, cH, v=>v/maxWpm, {color:'#5cb8ff', width:2});
+  chartLine(ctx, perSecAcc, pad, cW, cH, v=>v/100, {color:'#4ade80', width:1.5});
+  $('sum-chart-meta').textContent = `Blue = pace by second · Green = accuracy by second · Peak ${session.peakBurstWpm||0} WPM`;
+}
+
+function showSummary(wpm, acc, duration, errors, newBests=[], session={}, stagedUp=null){
   const prev = DATA.sessions.length > 1 ? DATA.sessions[DATA.sessions.length-2] : null;
   const modeLabels = {
-    homerow:'Home Row',word:'Word Training',flow:'Flow Typing',burst:'Speed Burst',
+    daily:'Daily Session',homerow:'Home Row',word:'Word Training',flow:'Flow Typing',burst:'Speed Burst',
     rhythm:'Rhythm Typing',timed1:'1-Min Test',timed3:'3-Min Test',
-    precision:'Precision Mode',sprint:'Speed Sprint',gate:'Stage Gate',
+    precision:'Precision Mode',sprint:'Speed Sprint',
     bigram:'Bigram Drill',problem:'Problem Key Drill',slowbigram:'Slow Bigram Drill',trigram:'Trigram Drill',
-    wordchunk:'Word Flow'
+    wordchunk:'Word Flow',adaptive:'Adaptive Coach',samefinger:'Same-Finger Repair',
+    numbers:'Numbers & Symbols',punctuation:'Punctuation Flow'
   };
-  const modeEl = document.getElementById('sum-mode-label');
+  const modeEl = $('sum-mode-label');
   if(modeEl) modeEl.textContent = (modeLabels[session.mode||ex.mode] || session.mode || '').toUpperCase();
 
-  document.getElementById('sum-wpm').textContent = wpm;
-  document.getElementById('sum-acc').textContent = acc.toFixed(1)+'%';
-  document.getElementById('sum-err').textContent = errors;
-  document.getElementById('sum-dur').textContent = formatTime(Math.round(duration));
+  $('sum-wpm').textContent = wpm;
+  $('sum-acc').textContent = acc.toFixed(1)+'%';
+  $('sum-err').textContent = errors;
+  $('sum-dur').textContent = formatTime(Math.round(duration));
+  $('sum-raw-wpm').textContent = session.rawWpm ?? '—';
+  $('sum-net-wpm').textContent = session.netWpm ?? '—';
+  $('sum-error-rate').textContent = session.errorRate != null ? session.errorRate.toFixed(1)+'%' : '—';
+  $('sum-burst-wpm').textContent = session.peakBurstWpm ? session.peakBurstWpm+' WPM' : '—';
 
   // Deltas
   if(prev){
     setDelta('sum-wpm-delta', wpm - prev.wpm, ' wpm', 0);
     setDelta('sum-acc-delta', acc - prev.accuracy, '%', 1);
   } else {
-    const wdEl = document.getElementById('sum-wpm-delta');
-    const adEl = document.getElementById('sum-acc-delta');
+    const wdEl = $('sum-wpm-delta');
+    const adEl = $('sum-acc-delta');
     if(wdEl) wdEl.textContent='';
     if(adEl) adEl.textContent='';
   }
 
   // Consistency with color
-  const consEl = document.getElementById('sum-consistency');
+  const consEl = $('sum-consistency');
   if(consEl){
     if(session.consistencyScore != null){
       const cs = Math.round(session.consistencyScore);
@@ -2278,9 +2948,8 @@ function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gateP
   }
 
   // PB banner
-  const pbEl = document.getElementById('sum-pb');
-  if(homerowPass) pbEl.textContent = '★ Home Row Complete! → Stage 1';
-  else if(gatePass) pbEl.textContent = `★ Stage ${DATA.stage} Unlocked — ${STAGE_NAMES[DATA.stage]}!`;
+  const pbEl = $('sum-pb');
+  if(stagedUp != null) pbEl.textContent = `★ Stage ${stagedUp} — ${STAGE_NAMES[stagedUp]}`;
   else if(newBests.length) pbEl.textContent = '★ PB: '+newBests.join(', ')+'!';
   else pbEl.textContent = '';
 
@@ -2291,25 +2960,42 @@ function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gateP
   buildSummaryWeaknessesCard(session);
 
   // Recommendation
-  const recEl = document.getElementById('sum-recommended');
+  const recEl = $('sum-recommended');
   if(recEl){
     const rec = recommendNextMode();
     const recNames = {slowbigram:'Slow Bigram Drill',problem:'Problem Key Drill',
-      rhythm:'Rhythm Typing',burst:'Speed Burst',word:'Word Training'};
+      rhythm:'Rhythm Typing',burst:'Speed Burst',word:'Word Training',adaptive:'Adaptive Coach',
+      samefinger:'Same-Finger Repair',numbers:'Numbers & Symbols'};
     recEl.textContent = rec ? '→ Recommended: '+recNames[rec] : '';
+  }
+  populateSummaryBreakdown(session);
+  drawSummaryTimeline(session);
+  const dailyCard = $('sum-daily-card');
+  const dailyCopy = $('sum-daily-copy');
+  const dailySteps = $('sum-daily-steps');
+  const nextDailyBtn = $('sum-next-daily-btn');
+  if(dailySession.active){
+    dailyCard.style.display = 'block';
+    dailyCopy.textContent = `${dailySession.label}. Step ${dailySession.index+1} of ${dailySession.plan.length}: ${dailySession.plan[dailySession.index].label}. ${dailySession.note}`;
+    dailySteps.innerHTML = dailySession.plan.map((step, idx)=>`<span class="daily-step ${idx===dailySession.index?'active':''}">${step.label}</span>`).join('');
+    nextDailyBtn.style.display = 'inline-flex';
+  } else {
+    dailyCard.style.display = 'none';
+    dailySteps.innerHTML = '';
+    nextDailyBtn.style.display = 'none';
   }
 
   // Precision block
-  const precBlock = document.getElementById('sum-precision-block');
+  const precBlock = $('sum-precision-block');
   if(session.precPerfectPct != null){
     precBlock.style.display = 'block';
-    document.getElementById('sum-prec-perfect').textContent =
+    $('sum-prec-perfect').textContent =
       session.precPerfectCount + ' / ' + session.precTotalWords + ' (' + session.precPerfectPct + '%)';
     const totalAttempts = session.precAttempts ?
       Object.values(session.precAttempts).reduce((a,b)=>a+b,0) + (session.precTotalWords||0) : '—';
-    document.getElementById('sum-prec-attempts').textContent = totalAttempts;
+    $('sum-prec-attempts').textContent = totalAttempts;
     const goalMet = session.precPerfectPct >= 90;
-    const goalEl = document.getElementById('sum-prec-goal');
+    const goalEl = $('sum-prec-goal');
     if(goalMet){
       goalEl.textContent = '✓ Achieved!';
       goalEl.style.color = 'var(--green)';
@@ -2323,13 +3009,13 @@ function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gateP
     const improvedCount = retryIndices.filter(i => session.precWordPerfect && session.precWordPerfect[i]).length;
     const retriedCount  = retryIndices.length;
     if(retriedCount > 0){
-      const impEl = document.getElementById('sum-prec-improved');
+      const impEl = $('sum-prec-improved');
       if(impEl){
         impEl.textContent = improvedCount + ' / ' + retriedCount + ' retried words mastered';
         impEl.style.color = improvedCount === retriedCount ? 'var(--green)' : 'var(--yellow)';
       }
     }
-    const masteryEl = document.getElementById('sum-prec-mastery');
+    const masteryEl = $('sum-prec-mastery');
     if(session.precWordList && session.precWordPerfect){
       const completedCount = session.precTotalWords || 0;
       const chips = session.precWordList.slice(0, completedCount).map((word, i)=>{
@@ -2367,17 +3053,17 @@ function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gateP
   }
 
   // Word Flow block
-  const wcBlock = document.getElementById('sum-wordchunk-block');
+  const wcBlock = $('sum-wordchunk-block');
   if(wcBlock){
     if(session.wcPerfectRate != null){
       wcBlock.style.display = 'block';
       const total = session.wcWordResults ? session.wcWordResults.length : 0;
       const perfCount = session.wcWordResults ? session.wcWordResults.filter(r=>r.perfect).length : 0;
-      document.getElementById('sum-wc-perfect').textContent = perfCount+' / '+total+' ('+Math.round(session.wcPerfectRate*100)+'%)';
-      document.getElementById('sum-wc-avg-ms').textContent = session.wcAvgExecMs ? session.wcAvgExecMs+'ms' : '—';
-      document.getElementById('sum-wc-best-wpm').textContent = session.wcBestWordWPM ? session.wcBestWordWPM+' WPM' : '—';
-      document.getElementById('sum-wc-streak').textContent = session.wcBestStreak || 0;
-      const grid = document.getElementById('sum-wc-results');
+      $('sum-wc-perfect').textContent = perfCount+' / '+total+' ('+Math.round(session.wcPerfectRate*100)+'%)';
+      $('sum-wc-avg-ms').textContent = session.wcAvgExecMs ? session.wcAvgExecMs+'ms' : '—';
+      $('sum-wc-best-wpm').textContent = session.wcBestWordWPM ? session.wcBestWordWPM+' WPM' : '—';
+      $('sum-wc-streak').textContent = session.wcBestStreak || 0;
+      const grid = $('sum-wc-results');
       if(grid && session.wcWordResults){
         grid.innerHTML = session.wcWordResults.map(r=>{
           const cls = r.perfect ? 'perfect' : 'errors';
@@ -2392,28 +3078,15 @@ function showSummary(wpm, acc, duration, errors, homerowPass, newBests=[], gateP
 
   showScreen('summary');
 
-  if(gatePass){
-    setTimeout(()=>{
-      document.getElementById('stageup-title').textContent = `★ Stage ${DATA.stage} — ${STAGE_NAMES[DATA.stage]}! ★`;
-      document.getElementById('stageup-desc').textContent = `Unlocks: ${STAGE_UNLOCKS[DATA.stage]}`;
-      document.getElementById('stageup-overlay').classList.add('active');
-    }, 600);
-  } else if(ex.pendingGate){
-    ex.pendingGate = false;
-    setTimeout(()=>document.getElementById('gate-overlay').classList.add('active'), 800);
+  if(stagedUp != null){
+    showToast(`★ Stage ${stagedUp} — ${STAGE_NAMES[stagedUp]}`);
   }
 }
 
 function startCurrentMode(){ if(ex.mode) startExercise(ex.mode); }
 
-function startGateTest(){
-  closeOverlay();
-  const req = ex.pendingGateReq || STAGE_REQS[DATA.stage];
-  startExercise('gate', {gate:true, gateReq: req});
-}
-
 function closeOverlay(){
-  document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('active'));
+  $$('.overlay').forEach(o=>o.classList.remove('active'));
 }
 
 // ═══════════════════════════════════════════════
@@ -2461,7 +3134,7 @@ let chartFilter = 'speed';
 let heatmapFilter = 'alltime';
 
 function updateFingerGuide(){
-  const guide = document.getElementById('finger-guide');
+  const guide = $('finger-guide');
   if(!guide || !DATA.settings.showFingerGuide){ if(guide) guide.style.display='none'; return; }
 
   const ch  = ex.pos   < ex.text.length ? ex.text[ex.pos]   : null;
@@ -2474,9 +3147,9 @@ function updateFingerGuide(){
   const row   = getRowForKey(ch);
 
   // Current key
-  const curKey  = document.getElementById('fg-cur-key');
-  const curName = document.getElementById('fg-cur-name');
-  const curRow  = document.getElementById('fg-cur-row');
+  const curKey  = $('fg-cur-key');
+  const curName = $('fg-cur-name');
+  const curRow  = $('fg-cur-row');
   curKey.textContent  = ch===' ' ? '⎵' : ch.toUpperCase();
   curKey.style.color  = fc;
   curKey.style.borderColor = fc;
@@ -2488,7 +3161,7 @@ function updateFingerGuide(){
   curRow.style.borderColor = ROW_COLORS[row]||'#888';
 
   // Hand note
-  const handNote = document.getElementById('fg-hand-note');
+  const handNote = $('fg-hand-note');
   const isUpper = ch !== ch.toLowerCase() && ch !== ' ';
   handNote.textContent = isUpper
     ? (f.startsWith('l') ? '← LEFT + RIGHT ⇧' : 'RIGHT → + LEFT ⇧')
@@ -2496,9 +3169,9 @@ function updateFingerGuide(){
   handNote.style.color = fc;
 
   // Next key
-  const nxtKey  = document.getElementById('fg-nxt-key');
-  const nxtName = document.getElementById('fg-nxt-name');
-  const nxtRow  = document.getElementById('fg-nxt-row');
+  const nxtKey  = $('fg-nxt-key');
+  const nxtName = $('fg-nxt-name');
+  const nxtRow  = $('fg-nxt-row');
   if(nch){
     const nf   = getFingerForKey(nch);
     const nfc  = FINGER_COLORS[nf]||'#888';
@@ -2513,7 +3186,7 @@ function updateFingerGuide(){
     nxtRow.style.borderColor = (ROW_COLORS[nrow]||'#888')+'66';
 
     // Same-finger warning
-    const warn = document.getElementById('fg-warn');
+    const warn = $('fg-warn');
     if(f === nf && f !== 'thumb'){
       warn.style.display='block';
       warn.textContent = `⚠ Same finger (${FINGER_NAMES[f]}) — lift cleanly`;
@@ -2522,12 +3195,12 @@ function updateFingerGuide(){
     }
   } else {
     nxtKey.textContent='—'; nxtName.textContent=''; nxtRow.textContent='';
-    document.getElementById('fg-warn').style.display='none';
+    $('fg-warn').style.display='none';
   }
 }
 
 function updateWordFingerStrip(){
-  const strip = document.getElementById('word-finger-strip');
+  const strip = $('word-finger-strip');
   if(!strip || !DATA.settings.showFingerDots){ if(strip) strip.style.display='none'; return; }
   if(ex.mode === 'burst'){ strip.style.display='none'; return; }
   if(ex.mode === 'wordchunk') return;
@@ -2562,7 +3235,7 @@ function updateWordFingerStrip(){
 }
 
 function buildVisualKeyboard(){
-  const vk = document.getElementById('visual-keyboard');
+  const vk = $('visual-keyboard');
   vk.innerHTML = '';
   KEY_ROWS.forEach(row=>{
     const rowEl = document.createElement('div');
@@ -2594,35 +3267,44 @@ function buildVisualKeyboard(){
 // MODES SCREEN
 // ═══════════════════════════════════════════════
 const MODES_DEF = [
-  {id:'homerow',  stage:0, name:'Home Row Foundation', desc:'Reset posture. Home row only. 100% accuracy required.'},
+  {id:'daily',    stage:0, name:'Daily Session',        desc:'Automatic 5-step plan based on your current bottlenecks.'},
+  {id:'homerow',  stage:0, name:'Home Row Foundation', desc:'Reset posture. Home row only — calm pace, clean accuracy.'},
   {id:'bigram',   stage:1, name:'Letter Pattern Drill', desc:'Train the most common bigrams and trigrams.'},
   {id:'word',     stage:1, name:'Word Training',        desc:'Common English words. Problem words appear more often.'},
+  {id:'adaptive', stage:1, name:'Adaptive Coach',       desc:'Builds sessions around your weakest keys, bigrams and trigrams.'},
   {id:'burst',    stage:1, name:'Speed Burst',          desc:'30-second max-effort bursts. One word at a time.'},
   {id:'rhythm',   stage:2, name:'Rhythm Typing',        desc:'Metronome-paced typing. Eliminate uneven cadence.'},
   {id:'slowbigram',stage:2,name:'Slow Bigram Drill',   desc:'Targets your personally slowest key transitions.'},
+  {id:'samefinger',stage:2,name:'Same-Finger Repair',   desc:'Specifically attacks awkward same-finger transitions and ring/pinky control.'},
   {id:'flow',     stage:3, name:'Flow Typing',          desc:'Full sentences and passages. Natural typing flow.'},
   {id:'problem',  stage:4, name:'Problem Key Drill',    desc:'Targeted drills for your weakest keys and transitions.'},
   {id:'timed1',   stage:1, name:'1-Minute Test',        desc:'Classic 60-second timed test.'},
   {id:'timed3',   stage:1, name:'3-Minute Test',        desc:'Three-minute endurance test.'},
   {id:'precision',stage:2, name:'Precision Drill',      desc:'Zero-error word mastery. Any mistake resets the word. Build accuracy before speed.'},
   {id:'wordchunk',stage:1, name:'Word Flow',             desc:'Train words as single motor units. Prepare, then execute cleanly. Builds word-level fluency.'},
+  {id:'punctuation',stage:2, name:'Punctuation Flow',    desc:'Sentence-like practice with commas, periods, questions and semicolons.'},
+  {id:'numbers',  stage:2, name:'Numbers & Symbols',    desc:'Emails, values, symbols and shortcuts mixed into short runs.'},
   {id:'lefthand', stage:1, name:'Left Hand Only',       desc:'← LEFT HAND  Words typed entirely with your left hand. Builds finger independence.'},
   {id:'righthand',stage:1, name:'Right Hand Only',      desc:'RIGHT HAND →  Words typed entirely with your right hand. Smaller word set — a real challenge.'},
   {id:'custom',   stage:6, name:'Custom Text',          desc:'Type your own word list. Configure in Settings.'},
 ];
 
 function buildModesScreen(){
-  const grid = document.getElementById('modes-grid');
+  const grid = $('modes-grid');
   grid.innerHTML = '';
   const rec = recommendNextMode();
   MODES_DEF.forEach(m=>{
     const card = document.createElement('div');
-    const locked = DATA.stage < m.stage;
-    card.className = 'mode-card'+(locked?' locked':'');
-    const badge = (!locked && m.id === rec) ? '<span class="rec-badge">RECOMMENDED</span>' : '';
-    card.innerHTML = `<h3>${m.name}${badge}</h3><p>${m.desc}</p>`+
-      (locked?`<div class="lock-msg">Unlocks at Stage ${m.stage} — ${STAGE_NAMES[m.stage]}</div>`:'');
-    if(!locked) card.onclick = ()=>startExercise(m.id);
+    card.className = 'mode-card';
+    const isRecommended = m.id === rec;
+    const isStageMatch  = m.stage === DATA.stage && !isRecommended;
+    const badge = isRecommended
+      ? '<span class="rec-badge">RECOMMENDED</span>'
+      : isStageMatch
+        ? `<span class="rec-badge stage-badge-chip">STAGE ${m.stage}</span>`
+        : '';
+    card.innerHTML = `<h3>${m.name}${badge}</h3><p>${m.desc}</p>`;
+    card.onclick = ()=>m.id === 'daily' ? startDailySession() : startExercise(m.id);
     grid.appendChild(card);
   });
 }
@@ -2631,12 +3313,12 @@ function buildModesScreen(){
 // RECORDS SCREEN
 // ═══════════════════════════════════════════════
 function switchRecordsTab(tab){
-  document.querySelectorAll('.rec-tab').forEach((t,i)=>{
+  $$('.rec-tab').forEach((t,i)=>{
     const tabs = ['overview','speed','accuracy','weaknesses'];
     t.classList.toggle('active', tabs[i]===tab);
   });
-  document.querySelectorAll('.rec-tab-panel').forEach(p=>p.classList.remove('active'));
-  const panel = document.getElementById('rec-tab-'+tab);
+  $$('.rec-tab-panel').forEach(p=>p.classList.remove('active'));
+  const panel = $('rec-tab-'+tab);
   if(panel) panel.classList.add('active');
   // Redraw canvases when shown (they may have been zero-size when hidden)
   if(tab==='speed') drawProgressChart();
@@ -2646,23 +3328,52 @@ function switchRecordsTab(tab){
 
 function setHeatmapFilter(f){
   heatmapFilter = f;
-  document.querySelectorAll('.heatmap-filter-btn').forEach(b=>
+  $$('.heatmap-filter-btn').forEach(b=>
     b.classList.toggle('active', b.textContent.trim().toLowerCase().replace(' ','').includes(f==='alltime'?'alltime':'last20')||
     (f==='alltime'&&b.textContent.includes('All'))||(f==='last20'&&b.textContent.includes('Last'))));
   drawHeatmap();
 }
 
 function buildRecordsScreen(){
+  switchRecordsTab('overview');
   buildRecordsTabOverview();
   buildRecordsTabSpeed();
   // accuracy and weaknesses drawn on tab switch to avoid zero-size canvas
   drawActivityHeatmap();
 }
 
+function buildCoachOverview(){
+  const textEl = $('rec-coach-text');
+  const gridEl = $('rec-coach-grid');
+  const listEl = $('rec-coach-list');
+  if(!textEl || !gridEl || !listEl) return;
+  const profile = getAdaptiveProfile();
+  const bottlenecks = analyzeBottlenecks();
+  const planObj = buildDailyPlan();
+  const recommendation = recommendNextMode();
+  const lead = profile.weakKeys[0]?.key?.toUpperCase() || '—';
+  const bg = profile.weakBigrams[0]?.bg?.toUpperCase() || '—';
+  const tg = profile.weakTrigrams[0]?.tg?.toUpperCase() || '—';
+  textEl.textContent = recommendation === 'adaptive'
+    ? `Adaptive coach is ready. Your biggest gains are likely in ${lead}, ${bg} and ${tg}.`
+    : `Current best next step: ${recommendation || 'keep building more data'} based on your latest sessions.`;
+  gridEl.innerHTML = `
+    <div class="coach-box"><div class="coach-k">WEAKEST KEY</div><div class="coach-v">${lead}</div></div>
+    <div class="coach-box"><div class="coach-k">WEAKEST BIGRAM</div><div class="coach-v">${bg}</div></div>
+    <div class="coach-box"><div class="coach-k">WEAKEST TRIGRAM</div><div class="coach-v">${tg}</div></div>
+  `;
+  listEl.innerHTML = [
+    bottlenecks.needsAccuracy ? 'Accuracy is the current bottleneck.' : 'Accuracy is stable enough to push pace.',
+    bottlenecks.needsRhythm ? 'Cadence work will likely unlock easier gains.' : 'Cadence is not the main limiter right now.',
+    `Daily plan: ${planObj.steps.map(s=>s.label).join(' → ')}`
+  ].map(line=>`<span class="sum-pill ${line.includes('bottleneck') || line.includes('Cadence work') ? 'warn' : 'good'}">${line}</span>`).join('');
+}
+
 function buildRecordsTabOverview(){
+  buildCoachOverview();
   const r = DATA.records;
   // Bests grid
-  const bg = document.getElementById('rec-bests-grid');
+  const bg = $('rec-bests-grid');
   if(bg){
     bg.innerHTML = `
       <div class="rec-best-box"><div class="rec-best-val">${r.bestWPM||0}</div><div class="rec-best-lbl">BEST WPM</div></div>
@@ -2670,18 +3381,18 @@ function buildRecordsTabOverview(){
       <div class="rec-best-box"><div class="rec-best-val">${r.currentSessionStreak||0}</div><div class="rec-best-lbl">DAY STREAK</div></div>
     `;
   }
-  const speedEl = document.getElementById('records-speed');
+  const speedEl = $('records-speed');
   if(speedEl) speedEl.innerHTML = `
     <div class="record-row"><span>Best Burst WPM</span><span class="rval">${r.bestBurstWPM||0} wpm</span></div>
     <div class="record-row"><span>Best Rhythm WPM</span><span class="rval">${r.bestRhythmWPM||0} wpm</span></div>
   `;
-  const accEl = document.getElementById('records-accuracy');
+  const accEl = $('records-accuracy');
   if(accEl) accEl.innerHTML = `
     <div class="record-row"><span>Longest Perfect Streak</span><span class="rval">${r.longestPerfectStreak||0} chars</span></div>
     <div class="record-row"><span>Longest Day Streak</span><span class="rval">${r.longestSessionStreak||0} days</span></div>
   `;
   const recent = DATA.sessions.slice(-10).reverse();
-  const modeLabels = {word:'Word',flow:'Flow',timed1:'1-Min',timed3:'3-Min',burst:'Burst',rhythm:'Rhythm',precision:'Prec',sprint:'Sprint',gate:'Gate',wordchunk:'WordFlow'};
+  const modeLabels = {daily:'Daily',word:'Word',flow:'Flow',timed1:'1-Min',timed3:'3-Min',burst:'Burst',rhythm:'Rhythm',precision:'Prec',sprint:'Sprint',gate:'Gate',wordchunk:'WordFlow',adaptive:'Adaptive',samefinger:'SameFinger',numbers:'Numbers',punctuation:'Punct'};
   const recentRows = recent.map(s=>`
     <div class="record-row" style="font-size:.8rem">
       <span style="color:var(--text3)">${s.date}</span>
@@ -2689,11 +3400,11 @@ function buildRecordsTabOverview(){
       <span class="rval">${s.wpm} wpm</span>
       <span style="color:var(--green)">${s.accuracy.toFixed(1)}%</span>
     </div>`).join('');
-  const recentEl = document.getElementById('records-recent');
+  const recentEl = $('records-recent');
   if(recentEl) recentEl.innerHTML = `<h3>Recent Sessions</h3>${recentRows||'<div style="color:var(--text3)">No sessions yet.</div>'}`;
 
   // Trend summary
-  const trendEl = document.getElementById('rec-trend-summary');
+  const trendEl = $('rec-trend-summary');
   if(trendEl){
     const modes = ['word','burst','rhythm'];
     const trendLines = modes.map(m=>{
@@ -2709,18 +3420,19 @@ function buildRecordsTabOverview(){
 
 function buildRecordsTabSpeed(){
   const modeLabels = {
-    word:'Word Training', flow:'Flow Typing', timed1:'1-Min Test',
+    daily:'Daily Session', word:'Word Training', flow:'Flow Typing', timed1:'1-Min Test',
     timed3:'3-Min Test', burst:'Speed Burst', rhythm:'Rhythm', sprint:'Speed Sprint', gate:'Stage Gate',
-    wordchunk:'Word Flow', lefthand:'Left Hand Only', righthand:'Right Hand Only'
+    wordchunk:'Word Flow', lefthand:'Left Hand Only', righthand:'Right Hand Only',
+    adaptive:'Adaptive Coach', samefinger:'Same-Finger Repair', numbers:'Numbers & Symbols', punctuation:'Punctuation Flow'
   };
-  const table = document.getElementById('rec-mode-table');
+  const table = $('rec-mode-table');
   if(!table) return;
   const mr = DATA.modeRecords || {};
   const rows = Object.entries(modeLabels)
     .filter(([id])=>mr[id] && mr[id].bestWPM>0)
     .map(([id,label])=>{
       const m = mr[id];
-      const dateStr = m.date ? new Date(m.date).toLocaleDateString('en-US',{month:'short',day:'numeric'}) : '—';
+      const dateStr = formatStoredDate(m.date);
       return `<tr>
         <td>${label}</td>
         <td style="color:var(--accent);font-weight:bold">${m.bestWPM} wpm</td>
@@ -2734,90 +3446,36 @@ function buildRecordsTabSpeed(){
 
 function setChartFilter(f){
   chartFilter = f;
-  document.querySelectorAll('.chart-filter').forEach(b=>
+  $$('.chart-filter').forEach(b=>
     b.classList.toggle('active', b.dataset.f===f));
   drawProgressChart();
 }
 
 function drawProgressChart(){
-  const canvas = document.getElementById('progress-chart');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillRect(0,0,W,H);
+  const c = chartInit($('progress-chart')); if(!c) return;
+  const {ctx, W, H} = c;
 
-  const FILTER_MODES = {
-    speed: ['word','flow','timed1','timed3','gate'],
-    burst: ['burst'],
-    rhythm: ['rhythm'],
-    all: null
-  };
-  const MODE_DOT_COLORS = {
-    word:'#4a9eff', flow:'#7c3aed', timed1:'#ffc107', timed3:'#ff9800',
-    gate:'#ef4444', burst:'#22c55e', rhythm:'#f97316'
-  };
-  const modeShortLabels = {
-    word:'Word', flow:'Flow', timed1:'1-Min', timed3:'3-Min',
-    gate:'Gate', burst:'Burst', rhythm:'Rhythm'
-  };
+  const FILTER_MODES = {speed:['word','flow','timed1','timed3','adaptive'], burst:['burst'], rhythm:['rhythm'], all:null};
+  const MODE_DOT_COLORS = {word:'#4a9eff', flow:'#7c3aed', timed1:'#ffc107', timed3:'#ff9800',
+    adaptive:'#22d3ee', burst:'#22c55e', rhythm:'#f97316'};
+  const modeShortLabels = {word:'Word', flow:'Flow', timed1:'1-Min', timed3:'3-Min', gate:'Gate', burst:'Burst', rhythm:'Rhythm'};
   const allowed = FILTER_MODES[chartFilter];
-  // Use last 90 days instead of slicing to 30
   const cutoff = new Date(Date.now() - 90*24*60*60*1000).toISOString().slice(0,10);
-  const allFiltered = allowed
-    ? DATA.sessions.filter(s=>allowed.includes(s.mode))
-    : DATA.sessions;
+  const allFiltered = allowed ? DATA.sessions.filter(s=>allowed.includes(s.mode)) : DATA.sessions;
   const sessions = allFiltered.filter(s=>s.date >= cutoff);
 
-  if(sessions.length < 2){
-    ctx.fillStyle = '#666';
-    ctx.font = '14px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('Complete more sessions to see your progress chart', W/2, H/2);
-    return;
-  }
+  if(sessions.length < 2){ chartEmpty(ctx, W, H, 'Complete more sessions to see your progress chart'); return; }
 
-  const wpms = sessions.map(s=>s.wpm);
-  const maxWpm = Math.max(...wpms, 10);
+  const maxWpm = Math.max(...sessions.map(s=>s.wpm), 10);
   const pad = {l:50, r:70, t:20, b:50};
   const cW = W-pad.l-pad.r, cH = H-pad.t-pad.b;
 
-  // Grid lines
-  ctx.strokeStyle = '#2a2a2a';
-  ctx.lineWidth = 1;
-  for(let i=0;i<=4;i++){
-    const y = pad.t + (cH/4)*i;
-    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+cW,y); ctx.stroke();
-    ctx.fillStyle = '#555';
-    ctx.font = '10px monospace';
-    ctx.textAlign = 'right';
-    ctx.fillText(Math.round(maxWpm-(maxWpm/4)*i), pad.l-4, y+4);
-  }
+  chartGrid(ctx, pad, cW, cH);
+  ctx.fillStyle='#555'; ctx.font='10px monospace'; ctx.textAlign='right';
+  for(let i=0;i<=4;i++) ctx.fillText(Math.round(maxWpm-(maxWpm/4)*i), pad.l-4, pad.t+(cH/4)*i+4);
 
-  // WPM line
-  ctx.strokeStyle = '#4a9eff';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  sessions.forEach((s,i)=>{
-    const x = pad.l + (i/(sessions.length-1))*cW;
-    const y = pad.t + cH - (s.wpm/maxWpm)*cH;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-
-  // Accuracy line (right axis, 80-100%)
-  ctx.strokeStyle = '#4caf50';
-  ctx.lineWidth = 1.5;
-  ctx.setLineDash([4,3]);
-  ctx.beginPath();
-  sessions.forEach((s,i)=>{
-    const x = pad.l + (i/(sessions.length-1))*cW;
-    const y = pad.t + cH - ((s.accuracy-80)/20)*cH;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-  ctx.setLineDash([]);
+  chartLine(ctx, sessions.map(s=>s.wpm), pad, cW, cH, v=>v/maxWpm, {color:'#4a9eff', width:2});
+  chartLine(ctx, sessions.map(s=>s.accuracy), pad, cW, cH, v=>(v-80)/20, {color:'#4caf50', width:1.5, dash:[4,3]});
 
   // Trend line (linear regression) if >= 6 sessions
   if(sessions.length >= 6){
@@ -2874,12 +3532,8 @@ function drawProgressChart(){
 }
 
 function drawActivityHeatmap(){
-  const canvas = document.getElementById('activity-heatmap');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,W,H);
+  const c = chartInit($('activity-heatmap')); if(!c) return;
+  const {ctx, W, H} = c;
 
   // Count sessions per date (last 90 days)
   const sessionCounts = {};
@@ -2918,13 +3572,8 @@ function drawActivityHeatmap(){
 }
 
 function drawHeatmap(){
-  const canvas = document.getElementById('heatmap-canvas');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#1a1a1a';
-  ctx.fillRect(0,0,W,H);
+  const c = chartInit($('heatmap-canvas')); if(!c) return;
+  const {ctx, W, H} = c;
 
   // Build error counts based on filter
   let errorCounts;
@@ -2972,35 +3621,21 @@ function drawHeatmap(){
 }
 
 function drawConsistencyChart(){
-  const canvas = document.getElementById('consistency-chart');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,W,H);
+  const c = chartInit($('consistency-chart')); if(!c) return;
+  const {ctx, W, H} = c;
 
   const sessions = DATA.sessions.filter(s=>s.consistencyScore != null && s.wpm > 0).slice(-30);
-  if(sessions.length < 2){
-    ctx.fillStyle='#555'; ctx.font='13px monospace'; ctx.textAlign='center';
-    ctx.fillText('Not enough data (need 2+ sessions with consistency data)', W/2, H/2);
-    return;
-  }
+  if(sessions.length < 2){ chartEmpty(ctx, W, H, 'Not enough data (need 2+ sessions with consistency data)'); return; }
 
   const pad = {l:50,r:60,t:15,b:35};
   const cW = W-pad.l-pad.r, cH = H-pad.t-pad.b;
-  const wpms = sessions.map(s=>s.wpm);
-  const maxWpm = Math.max(...wpms, 10);
+  const maxWpm = Math.max(...sessions.map(s=>s.wpm), 10);
 
-  // Grid
-  ctx.strokeStyle='#2a2a2a'; ctx.lineWidth=1;
-  for(let i=0;i<=4;i++){
-    const y = pad.t+(cH/4)*i;
-    ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(pad.l+cW,y); ctx.stroke();
-    ctx.fillStyle='#555'; ctx.font='9px monospace'; ctx.textAlign='right';
-    ctx.fillText(Math.round(maxWpm-(maxWpm/4)*i), pad.l-4, y+3);
-  }
+  chartGrid(ctx, pad, cW, cH);
+  ctx.fillStyle='#555'; ctx.font='9px monospace'; ctx.textAlign='right';
+  for(let i=0;i<=4;i++) ctx.fillText(Math.round(maxWpm-(maxWpm/4)*i), pad.l-4, pad.t+(cH/4)*i+3);
 
-  // 60% threshold line (right axis = consistency)
+  // 60% threshold line
   const threshY = pad.t + cH - (60/100)*cH;
   ctx.strokeStyle='rgba(244,67,54,.4)'; ctx.lineWidth=1; ctx.setLineDash([5,4]);
   ctx.beginPath(); ctx.moveTo(pad.l,threshY); ctx.lineTo(pad.l+cW,threshY); ctx.stroke();
@@ -3016,29 +3651,11 @@ function drawConsistencyChart(){
     const y = pad.t+cH-(s.wpm/maxWpm)*cH;
     i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
   });
-  ctx.lineTo(pad.l+cW, pad.t+cH);
-  ctx.lineTo(pad.l, pad.t+cH);
+  ctx.lineTo(pad.l+cW, pad.t+cH); ctx.lineTo(pad.l, pad.t+cH);
   ctx.closePath(); ctx.fill();
 
-  // WPM line
-  ctx.strokeStyle='#4a9eff'; ctx.lineWidth=2;
-  ctx.beginPath();
-  sessions.forEach((s,i)=>{
-    const x = pad.l+(i/(sessions.length-1))*cW;
-    const y = pad.t+cH-(s.wpm/maxWpm)*cH;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.stroke();
-
-  // Consistency line (right axis 0-100%)
-  ctx.strokeStyle='#ff9800'; ctx.lineWidth=1.5;
-  ctx.beginPath();
-  sessions.forEach((s,i)=>{
-    const x = pad.l+(i/(sessions.length-1))*cW;
-    const y = pad.t+cH-(s.consistencyScore/100)*cH;
-    i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-  });
-  ctx.stroke();
+  chartLine(ctx, sessions.map(s=>s.wpm), pad, cW, cH, v=>v/maxWpm, {color:'#4a9eff', width:2});
+  chartLine(ctx, sessions.map(s=>s.consistencyScore), pad, cW, cH, v=>v/100, {color:'#ff9800', width:1.5});
 
   // Right axis labels
   ctx.fillStyle='#ff9800'; ctx.font='9px monospace'; ctx.textAlign='left';
@@ -3054,7 +3671,7 @@ function drawConsistencyChart(){
 }
 
 function buildProblemPool(){
-  const el = document.getElementById('problem-pool-display');
+  const el = $('problem-pool-display');
   if(!el) return;
   const pool = Object.entries(DATA.problemPool)
     .filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,10);
@@ -3088,12 +3705,8 @@ function buildProblemPool(){
 }
 
 function buildFingerPerformance(){
-  const canvas = document.getElementById('finger-chart');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0,0,W,H);
+  const c = chartInit($('finger-chart')); if(!c) return;
+  const {ctx, W, H} = c;
 
   const FINGERS = ['lp','lr','lm','li','ri','rm','rr','rp'];
   const errors = DATA.fingerErrors||{};
@@ -3179,27 +3792,18 @@ function buildFingerPerformance(){
 }
 
 function drawBigramLatencyMap(){
-  const canvas = document.getElementById('bigram-heatmap');
-  if(!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#1a1a1a'; ctx.fillRect(0,0,W,H);
+  const c = chartInit($('bigram-heatmap')); if(!c) return;
+  const {ctx, W, H} = c;
 
   const bls = DATA.bigramLatencies||{};
   const validEntries = Object.entries(bls).filter(([bg,v])=>bg.length===2&&v.count>=3);
 
   if(validEntries.length < 20){
-    ctx.fillStyle='#555'; ctx.font='13px monospace'; ctx.textAlign='center';
-    ctx.fillText('Building bigram map…', W/2, H/2-20);
-    ctx.fillStyle='#444'; ctx.font='11px monospace';
-    ctx.fillText(`${validEntries.length}/20 bigrams recorded so far`, W/2, H/2+4);
-    // Progress bar
+    chartEmpty(ctx, W, H, 'Building bigram map…', `${validEntries.length}/20 bigrams recorded so far`);
     const barW = 300, barH2 = 12;
     const bx = W/2-barW/2, by = H/2+22;
     ctx.fillStyle='#2a2a2a'; ctx.fillRect(bx,by,barW,barH2);
-    const fill = Math.round((validEntries.length/20)*barW);
-    ctx.fillStyle='#4a9eff'; ctx.fillRect(bx,by,fill,barH2);
+    ctx.fillStyle='#4a9eff'; ctx.fillRect(bx,by,Math.round((validEntries.length/20)*barW),barH2);
     return;
   }
 
@@ -3268,30 +3872,34 @@ function drawBigramLatencyMap(){
 // STAGE PROGRESS SCREEN
 // ═══════════════════════════════════════════════
 function buildStageScreen(){
-  const road = document.getElementById('stage-road');
+  const road = $('stage-road');
   road.innerHTML = '';
 
-  const recent = DATA.sessions.slice(-3);
-  const avgWpm = recent.length ? recent.reduce((s,r)=>s+r.wpm,0)/recent.length : 0;
-  const avgAcc = recent.length ? recent.reduce((s,r)=>s+r.accuracy,0)/recent.length : 0;
+  const rolling = getRollingSpeedAverage();
+  const avgWpm = rolling ? rolling.wpm : 0;
+  const avgAcc = rolling ? rolling.acc : 0;
 
   STAGE_NAMES.forEach((name, i)=>{
     const item = document.createElement('div');
     const isCurrent = i === DATA.stage;
-    const isDone = i < DATA.stage;
+    const isDone    = i <  DATA.stage;
     item.className = 'stage-item'+(isCurrent?' current':isDone?' done':'');
 
-    const req = STAGE_REQS[i];
-    const reqText = i === 0 ? '3 perfect home row exercises' :
-      `${req.wpm} WPM | ${req.acc}% accuracy`;
+    const nextReq = getStageGateReq(i);
+    const reqText = nextReq
+      ? `Auto-advance at ${nextReq.wpm} WPM · ${nextReq.acc}% accuracy (rolling avg of last ${STAGE_ROLLING_WINDOW} speed sessions)`
+      : 'Final stage — keep refining.';
 
-    let gateBtn = '';
-    if(isCurrent && i > 0 && i < 6){
-      const nextReq = STAGE_REQS[i];
-      const canTakeGate = avgWpm >= nextReq.wpm * 0.9 && avgAcc >= nextReq.acc * 0.98;
-      if(canTakeGate){
-        gateBtn = `<button class="stage-gate-btn primary" onclick="triggerGateTest(${i})">Take Gate Test →</button>`;
-      }
+    let progressHtml = '';
+    if(isCurrent && nextReq && rolling){
+      const wpmGap = Math.max(0, nextReq.wpm - avgWpm);
+      const accGap = Math.max(0, nextReq.acc - avgAcc);
+      const gapText = wpmGap === 0 && accGap === 0
+        ? 'Threshold reached — next session locks it in.'
+        : `${wpmGap > 0 ? `+${wpmGap.toFixed(0)} WPM` : 'WPM ✓'} · ${accGap > 0 ? `+${accGap.toFixed(1)}%` : 'ACC ✓'} to go`;
+      progressHtml = `<p class="avg-display">Your avg: <b>${avgWpm.toFixed(0)} WPM</b> · <b>${avgAcc.toFixed(1)}%</b> — ${gapText}</p>`;
+    } else if(isCurrent && !rolling){
+      progressHtml = `<p class="avg-display">Complete a speed session (Word / Flow / Timed) to start measuring your rolling average.</p>`;
     }
 
     item.innerHTML = `
@@ -3299,21 +3907,12 @@ function buildStageScreen(){
       <div class="stage-info">
         <h3>Stage ${i} — ${name}</h3>
         <p>${STAGE_UNLOCKS[i]}</p>
-        ${isCurrent && i > 0 ? `<p class="avg-display">Gate: ${reqText}</p>` : ''}
-        ${isCurrent && recent.length ? `<p class="avg-display">Your 3-session avg: ${avgWpm.toFixed(0)} WPM / ${avgAcc.toFixed(1)}%</p>` : ''}
+        ${isCurrent ? `<p class="avg-display">${reqText}</p>` : ''}
+        ${progressHtml}
       </div>
-      ${gateBtn}
     `;
     road.appendChild(item);
   });
-}
-
-function triggerGateTest(stageNum){
-  document.getElementById('gate-title').textContent = `Stage ${stageNum+1} Gate Test`;
-  document.getElementById('gate-desc').textContent =
-    `60-second test. Need ${STAGE_REQS[stageNum].wpm} WPM and ${STAGE_REQS[stageNum].acc}% accuracy.`;
-  ex.pendingGateReq = STAGE_REQS[stageNum];
-  document.getElementById('gate-overlay').classList.add('active');
 }
 
 // ═══════════════════════════════════════════════
@@ -3321,29 +3920,50 @@ function triggerGateTest(stageNum){
 // ═══════════════════════════════════════════════
 function buildSettingsScreen(){
   const s = DATA.settings;
-  document.getElementById('set-sound').checked = s.sound !== false;
-  document.getElementById('set-bpm').value = s.bpm||80;
-  document.getElementById('bpm-val').textContent = s.bpm||80;
-  document.getElementById('set-font').value = s.fontSize||1.35;
-  document.getElementById('font-val').textContent = s.fontSize||1.35;
-  document.getElementById('set-vk').checked = s.showVK !== false;
-  document.getElementById('set-custom-words').value = DATA.customWords || '';
-  const themeLabel = (s.theme||'dark')==='light' ? '🌙 Dark Mode' : '☀ Light Mode';
-  const sb = document.getElementById('set-theme-btn');
-  if(sb) sb.textContent = themeLabel;
+  // Each entry: [DOM id, settings key, default, display-id (for range sliders), property]
+  const FIELDS = [
+    ['set-sound','sound',true,null,'checked'],
+    ['set-sound-profile','soundProfile','classic',null,'value'],
+    ['set-bpm','bpm',80,'bpm-val','value'],
+    ['set-font','fontSize',1.35,'font-val','value'],
+    ['set-vk','showVK',true,null,'checked'],
+    ['set-duration','testDuration',60,null,'value'],
+    ['set-wordcount','testWords',40,null,'value'],
+    ['set-capitalization','capitalizationRate',6,'cap-val','value'],
+    ['set-punctuation-density','punctuationDensity',14,'punct-val','value'],
+    ['set-number-density','numberDensity',10,'num-val','value'],
+    ['set-symbol-density','symbolDensity',4,'sym-val','value'],
+    ['set-punctuation','includePunctuation',false,null,'checked'],
+    ['set-numbers','includeNumbers',false,null,'checked'],
+    ['set-symbols','includeSymbols',false,null,'checked'],
+    ['set-adaptive','adaptiveCoach',true,null,'checked'],
+    ['set-zen','zenMode',false,null,'checked'],
+    ['set-live-coach','liveCoach',true,null,'checked'],
+  ];
+  for(const [id,key,def,displayId,prop] of FIELDS){
+    const el = $(id); if(!el) continue;
+    const cur = s[key];
+    const val = prop==='checked' ? (cur===false ? false : !!(cur ?? def)) : (cur ?? def);
+    el[prop] = val;
+    if(displayId){ const d = $(displayId); if(d) d.textContent = val; }
+  }
+  $('set-custom-words').value = DATA.customWords || '';
+  const sb = $('set-theme-btn');
+  if(sb) sb.textContent = (s.theme||'dark')==='light' ? '🌙 Dark Mode' : '☀ Light Mode';
 }
 
 function exportData(){
-  document.getElementById('data-textarea').value = JSON.stringify(DATA, null, 2);
+  $('data-textarea').value = JSON.stringify(DATA, null, 2);
   showToast('Data exported to text area below');
 }
 
 function importData(){
   try{
-    const raw = document.getElementById('data-textarea').value.trim();
+    const raw = $('data-textarea').value.trim();
     if(!raw){ showToast('Paste JSON data first'); return; }
-    DATA = deepMergeData(defaultData(), JSON.parse(raw));
+    DATA = deepMergeData(defaultData(), migrateData(JSON.parse(raw)));
     saveData();
+    $('ex-text-display').style.fontSize = (DATA.settings.fontSize||1.35)+'rem';
     showToast('Data imported successfully');
     updateMenuDisplay();
   }catch(e){
@@ -3356,6 +3976,7 @@ function resetData(){
   if(confirm('Reset ALL data? This cannot be undone.')){
     DATA = defaultData();
     saveData();
+    $('ex-text-display').style.fontSize = (DATA.settings.fontSize||1.35)+'rem';
     updateMenuDisplay();
     showToast('All data reset');
   }
@@ -3365,8 +3986,8 @@ function resetData(){
 // NAVIGATION
 // ═══════════════════════════════════════════════
 function showScreen(name){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('screen-'+name).classList.add('active');
+  $$('.screen').forEach(s=>s.classList.remove('active'));
+  $('screen-'+name).classList.add('active');
   if(name==='menu') updateMenuDisplay();
   if(name==='modes') buildModesScreen();
   if(name==='records') buildRecordsScreen();
@@ -3375,15 +3996,34 @@ function showScreen(name){
 }
 
 function updateMenuDisplay(){
-  document.getElementById('menu-stage-badge').textContent =
+  $('menu-stage-badge').textContent =
     `STAGE ${DATA.stage} — ${STAGE_NAMES[DATA.stage].toUpperCase()}`;
 
-  const today = new Date().toISOString().slice(0,10);
+  const today = getDateKey();
   const todaySessions = DATA.sessions.filter(s=>s.date===today);
   const todayAvg = todaySessions.length ?
     Math.round(todaySessions.reduce((s,r)=>s+r.wpm,0)/todaySessions.length) : 0;
-  document.getElementById('today-strip').textContent =
+  $('today-strip').textContent =
     `Today: ${todaySessions.length} session${todaySessions.length!==1?'s':''} · ${todaySessions.length?todayAvg+' avg WPM':'—'}`;
+  renderDailyPlanUI(buildDailyPlan());
+}
+
+function onGlobalKeyDown(e){
+  const summaryVisible = $('screen-summary').classList.contains('active');
+  const menuVisible = $('screen-menu').classList.contains('active');
+  if(summaryVisible && e.key === 'Enter'){
+    e.preventDefault();
+    startCurrentMode();
+  }
+  if(menuVisible && e.key.toLowerCase() === 't'){
+    e.preventDefault();
+    startDailySession();
+  }
+  if(ex.active && e.key === 'F4'){
+    e.preventDefault();
+    saveSetting('zenMode', !DATA.settings.zenMode);
+    showToast('Zen mode ' + (DATA.settings.zenMode ? 'ON' : 'OFF'));
+  }
 }
 
 // ═══════════════════════════════════════════════
@@ -3396,7 +4036,7 @@ function formatTime(s){
 }
 
 function showToast(msg){
-  const t = document.getElementById('toast');
+  const t = $('toast');
   t.textContent = msg;
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'), 2500);
@@ -3407,6 +4047,8 @@ function showToast(msg){
 // ═══════════════════════════════════════════════
 loadData();
 applyTheme(DATA.settings.theme||'dark');
+$('ex-text-display').style.fontSize = (DATA.settings.fontSize||1.35)+'rem';
+document.addEventListener('keydown', onGlobalKeyDown);
 updateMenuDisplay();
 </script>
 </body>
